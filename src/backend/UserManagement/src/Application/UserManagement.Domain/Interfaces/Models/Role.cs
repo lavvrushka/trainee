@@ -1,9 +1,9 @@
-﻿namespace UserManagement.Domain.Interfaces.Models
-{
-    public class Role:BaseModel
-    {
-        public string Name { get; set; } = null!;
-        public ICollection<Account> Accounts { get; set; } = new List<Account>();
-    }
+﻿using Microsoft.AspNetCore.Identity;
 
+namespace UserManagement.Domain.Interfaces.Models
+{
+    public class Role : IdentityRole<Guid>
+    {
+        public string? Description { get; set; }
+    }
 }
