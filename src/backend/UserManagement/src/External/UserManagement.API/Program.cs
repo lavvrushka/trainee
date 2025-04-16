@@ -1,10 +1,16 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using UserManagement.API.Extensions;
+using UserManagement.API.Middlewares;
+using UserManagement.Application.Common.Interfaces.IServices;
+using UserManagement.Domain.Interfaces.IServices;
 using UserManagement.Domain.Interfaces.Models;
+using UserManagement.Infrastructure.Persistence.Configurations;
 using UserManagement.Infrastructure.Persistence.Context;
+using UserManagement.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -19,12 +25,18 @@ builder.Services.AddIdentity<Account, Role>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
 })
-    .AddEntityFrameworkStores<UserManagementDbContext>();
- 
+    .AddEntityFrameworkStores<UserManagementDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddValidationServices();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddCustomMiddlewares();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -35,7 +47,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Введите ваш Bearer токен. Пример: 'abcdef12345'"
+        Description = "Введите ваш Bearer токен. Пример: 'Bearer abcdef12345'"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -54,18 +66,28 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
+builder.Services.AddScoped<IEmailDeliveryService, EmailDeliveryService>();
+
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReact",
-        policy => policy.WithOrigins("http://localhost:3000")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
+    options.AddPolicy("AllowReact", policy =>
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials());
 });
 
 var app = builder.Build();
 
 app.UseCors("AllowReact");
+app.UseCors("AllowProductService");
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+await UserManagementDbContextInitializer.InitializeAsync(app.Services);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -73,6 +95,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapControllers();
 app.Run();
+

@@ -7,12 +7,12 @@ namespace UserManagement.Infrastructure.Persistence.Context
 {
     public class UserManagementDbContext : IdentityDbContext<Account, Role, Guid>
     {
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+
         public UserManagementDbContext(DbContextOptions<UserManagementDbContext> options)
             : base(options)
         {
         }
-        public DbSet<RefreshToken> RefreshToken { get; set; } = null!;
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

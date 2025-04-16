@@ -8,16 +8,18 @@ namespace UserManagement.Infrastructure.Persistence.Repositories
     public class RefreshTokenRepository : Repository<RefreshToken>, IRefreshTokenRepository
     {
         public RefreshTokenRepository(UserManagementDbContext context) : base(context) { }
-        public async Task<RefreshToken?> GetByTokenAsync(string token)
+        public async Task<RefreshToken?> GetByTokenAndUserIdAsync(string token, Guid userId)
         {
             return await _context.Set<RefreshToken>()
-                .FirstOrDefaultAsync(rt => rt.Token == token);
+                .FirstOrDefaultAsync(rt => rt.Token == token && rt.AccountId == userId);
         }
-        public async Task<IEnumerable<RefreshToken>> GetAllByUserIdAsync(Guid accountId)
+        public Task<List<RefreshToken>> GetAllByUserIdAsync(Guid accountId)
         {
-            return await _context.Set<RefreshToken>()
+            var result = _context.Set<RefreshToken>()
                 .Where(rt => rt.AccountId == accountId)
-                .ToListAsync();
+                .ToList();  
+
+            return Task.FromResult(result);
         }
     }
 }
