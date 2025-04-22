@@ -2,31 +2,37 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Application.DTOs;
-using UserManagement.Application.DTOs.Requests;
 using UserManagement.Domain.Interfaces.Models;
-using UserManagement.Application.Common.Mappings;
 
-namespace UserManagement.Application.UseCases.UserUsecases
+namespace UserManagement.Application.UseCases.UserUsecases;
+
+public record GetAllUsersRequest(int PageNumber, int PageSize) : IRequest<(List<UserDto> Users, int TotalCount)>;
+
+public class GetAllUsersHandler : IRequestHandler<GetAllUsersRequest, (List<UserDto> Users, int TotalCount)>
 {
-    public class GetAllUsersHandler : IRequestHandler<GetAllUsersRequest, List<UserDto>>
+    private readonly UserManager<Account> _userManager;
+
+    public GetAllUsersHandler(UserManager<Account> userManager)
     {
-        private readonly UserManager<Account> _userManager;
+        _userManager = userManager;
+    }
 
-        public GetAllUsersHandler(UserManager<Account> userManager)
+    public async Task<(List<UserDto> Users, int TotalCount)> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
+    {
+        var totalCount = await _userManager.Users.CountAsync(cancellationToken);
+
+        var users = await _userManager.Users
+            .Skip((request.PageNumber - 1) * request.PageSize) 
+            .Take(request.PageSize) 
+            .ToListAsync(cancellationToken);
+
+        if (users == null || !users.Any())
         {
-            _userManager = userManager;
+            throw new Exception("No users found.");
         }
 
-        public async Task<List<UserDto>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
-        {
-            var users = await _userManager.Users.ToListAsync(cancellationToken);
-            if (users == null || !users.Any())
-            {
-                throw new Exception("No users found.");
-            }
+        var userDtos = users.Select(u => u.MapToUserDto()).ToList();
 
-            var userDtos = users.Select(u => u.MapToUserDto()).ToList();
-            return userDtos;
-        }
+        return (userDtos, totalCount);
     }
 }

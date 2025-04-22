@@ -1,33 +1,12 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using UserManagement.API.Extensions;
 using UserManagement.API.Middlewares;
-using UserManagement.Application.Common.Interfaces.IServices;
-using UserManagement.Domain.Interfaces.IServices;
-using UserManagement.Domain.Interfaces.Models;
 using UserManagement.Infrastructure.Persistence.Configurations;
 using UserManagement.Infrastructure.Persistence.Context;
-using UserManagement.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<UserManagementDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddIdentity<Account, Role>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-})
-    .AddEntityFrameworkStores<UserManagementDbContext>()
-    .AddDefaultTokenProviders();
-
+builder.Services.AddIdentityConfiguration();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -65,10 +44,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
-builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
-builder.Services.AddScoped<IEmailDeliveryService, EmailDeliveryService>();
-
 
 builder.Services.AddCors(options =>
 {

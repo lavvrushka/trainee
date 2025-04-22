@@ -1,4 +1,5 @@
-﻿using UserManagement.Application.DTOs.Requests;
+﻿using MediatR;
+using UserManagement.Application.Common.Behaviors;
 using UserManagement.Application.UseCases.AccountTools;
 using UserManagement.Application.UseCases.Auth;
 using UserManagement.Application.UseCases.AuthUsecases;
@@ -14,6 +15,7 @@ namespace UserManagement.API.Extensions
             {
                 configuration.RegisterServicesFromAssembly(typeof(UserLoginRequest).Assembly);
             });
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
             services.AddScoped<LoginHandler>();
             services.AddScoped<LogoutHandler>();
@@ -23,6 +25,7 @@ namespace UserManagement.API.Extensions
             services.AddScoped<SendPasswordTokenHandler>();
             services.AddScoped<SetNewPasswordHandler>();
             services.AddScoped<CurrentUserHandler>();
+
             return services;
         }
     }

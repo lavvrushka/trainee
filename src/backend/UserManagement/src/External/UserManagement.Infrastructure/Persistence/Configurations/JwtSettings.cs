@@ -1,11 +1,10 @@
-﻿namespace UserManagement.Infrastructure.Persistence.Configurations
+﻿namespace UserManagement.Infrastructure.Persistence.Configurations;
+
+public class JwtSettings
 {
-    public class JwtSettings
-    {
-        public string Secret { get; set; }
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
-        public int AccessTokenExpirationMinutes { get; set; }
-        public int RefreshTokenExpirationDays { get; set; }
-    }
+    public string Secret { get; set; }
+    public string Issuer { get; set; }
+    public string Audience { get; set; }
+    public int AccessTokenExpirationMinutes { get; set; }
+    public int RefreshTokenExpirationDays { get; set; }
 }

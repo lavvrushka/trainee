@@ -1,10 +1,9 @@
-﻿namespace UserManagement.Domain.Interfaces.Enums
+﻿namespace UserManagement.Domain.Interfaces.Enums;
+
+public enum RoleType
 {
-    public enum RoleType
-    {
-        Admin,
-        Patient,
-        Doctor,
-        Receptionist
-    }
+    Admin,
+    Patient,
+    Doctor,
+    Receptionist
 }

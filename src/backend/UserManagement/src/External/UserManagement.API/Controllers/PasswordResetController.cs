@@ -1,32 +1,32 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UserManagement.Application.DTOs.Requests;
+using UserManagement.Application.UseCases.AccountTools;
+namespace UserManagement.API.Controllers;
 
-namespace UserManagement.API.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class PasswordRecoveryController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PasswordRecoveryController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public PasswordRecoveryController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public PasswordRecoveryController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    [HttpPost("send-password-recovery-email")]
+    public async Task<IActionResult> SendRecoveryEmail([FromBody] SendPasswordTokenRequest request)
+    {
+        await _mediator.Send(request);
 
-        [HttpPost("send-password-recovery-email")]
-        public async Task<IActionResult> SendRecoveryEmail([FromBody] SendPasswordTokenRequest request)
-        {
-            await _mediator.Send(request);
-            return Ok("Password recovery email sent successfully.");
-        }
+        return Ok();
+    }
 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] SetNewPasswordRequest request)
-        {
-            await _mediator.Send(request);
-            return Ok("Password reset successfully.");
-        }
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] SetNewPasswordRequest request)
+    {
+        await _mediator.Send(request);
+
+        return Ok();
     }
 }

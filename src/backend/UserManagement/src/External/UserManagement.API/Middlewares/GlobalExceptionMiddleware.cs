@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using System.Net;
 using System.Text.Json;
-
 namespace UserManagement.API.Middlewares;
 public class GlobalExceptionMiddleware : IMiddleware
 {
