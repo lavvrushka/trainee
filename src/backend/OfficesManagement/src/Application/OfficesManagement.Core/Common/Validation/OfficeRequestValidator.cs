@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using OfficesManagement.Core.UseCases;
 
 namespace OfficesManagement.Core.Common.Validation;
 
