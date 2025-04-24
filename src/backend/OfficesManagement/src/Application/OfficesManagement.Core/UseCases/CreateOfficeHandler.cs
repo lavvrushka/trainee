@@ -3,12 +3,14 @@ using OfficesManagement.Core.Common.Interfaces.IRepositories;
 using OfficesManagement.Core.DTOs.Requests;
 using OfficesManagement.Core.Mapper;
 namespace OfficesManagement.Core.UseCases;
+
 public record CreateOfficeRequest(
         string Name,
         LocationRequest Location,
         bool IsActive,
         string RegistryPhoneNumber
 ) : IRequest<Unit>;
+
 public class CreateOfficeHandler: IRequestHandler<CreateOfficeRequest, Unit>
 {
     private readonly IOfficeRepository _officeRepository;

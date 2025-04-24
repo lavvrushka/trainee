@@ -3,7 +3,6 @@ using OfficesManagement.Core.Common.Exceptions;
 using OfficesManagement.Core.Common.Interfaces.IRepositories;
 using OfficesManagement.Core.DTOs.Requests;
 using OfficesManagement.Core.Mapper;
-
 namespace OfficesManagement.Core.UseCases;
 
 public record UpdateOfficeRequest(
@@ -13,6 +12,7 @@ public record UpdateOfficeRequest(
     bool IsActive,
     string RegistryPhoneNumber
 ) : IRequest<Unit>;
+
 public class UpdateOfficeHandler : IRequestHandler<UpdateOfficeRequest, Unit>
 {
     private readonly IOfficeRepository _officeRepository;

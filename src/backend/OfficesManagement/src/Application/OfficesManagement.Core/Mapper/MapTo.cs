@@ -1,6 +1,7 @@
 ﻿using OfficesManagement.Core.DTOs;
 using OfficesManagement.Core.DTOs.Requests;
 using OfficesManagement.Core.DTOs.Responses;
+using OfficesManagement.Core.Models;
 using OfficesManagement.Core.Models.Entities;
 using OfficesManagement.Core.Models.ValueObjects;
 using OfficesManagement.Core.UseCases;
@@ -57,4 +58,13 @@ public static class MappTo
             office.Location = request.Location.MapToLocation();
         }
     }
+    public static PageSettings MapToPageSettings(this GetAllOfficesRequest request)
+    {
+        return new PageSettings
+        {
+            PageIndex = request.PageIndex,
+            PageSize = request.PageSize
+        };
+    }
+
 }

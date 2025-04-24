@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using OfficesManagement.Core.Common.Exceptions;
 using OfficesManagement.Core.Common.Interfaces.IRepositories;
 namespace OfficesManagement.Core.UseCases;
 
 public record DeleteOfficeByIdRequest(Guid Id) : IRequest<Unit>;
+
 public class DeleteOfficeByIdHandler : IRequestHandler<DeleteOfficeByIdRequest, Unit>
 {
     private readonly IOfficeRepository _officeRepository;
@@ -18,9 +20,8 @@ public class DeleteOfficeByIdHandler : IRequestHandler<DeleteOfficeByIdRequest, 
 
         if (office is null)
         {
-            throw new KeyNotFoundException($"Office with ID '{request.Id}' was not found.");
+            throw new NotFoundException($"Office with Id = {request.Id} was not found.");
         }
-
         await _officeRepository.DeleteAsync(office);
 
         return Unit.Value;
