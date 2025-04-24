@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using OfficesManagement.Core.Common.Interfaces.IRepositories;
 using OfficesManagement.Core.DTOs.Requests;
-using OfficesManagement.Core.Models.Entities;
-using OfficesManagement.Core.Models.ValueObjects;
-
+using OfficesManagement.Core.Mapper;
 namespace OfficesManagement.Core.UseCases;
 public record CreateOfficeRequest(
         string Name,
@@ -14,21 +12,17 @@ public record CreateOfficeRequest(
 public class CreateOfficeHandler: IRequestHandler<CreateOfficeRequest, Unit>
 {
     private readonly IOfficeRepository _officeRepository;
-    private readonly IMapper _mapper;
 
-    public CreateOfficeHandler(IOfficeRepository officeRepository, IMapper mapper)
+    public CreateOfficeHandler(IOfficeRepository officeRepository)
     {
         _officeRepository = officeRepository;
-        _mapper = mapper;
     }
 
     public async Task<Unit> Handle(CreateOfficeRequest request, CancellationToken cancellationToken)
     {
-
-        var location = _mapper.Map<Location>(request.Location);
-        var officeEntity = _mapper.Map<Office>(request);
-        officeEntity.Location = location;
+        var officeEntity = request.MapToOffice();
         await _officeRepository.AddAsync(officeEntity);
+
         return Unit.Value;
     }
 }
