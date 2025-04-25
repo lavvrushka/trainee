@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.API", "src\External\OfficesManagement.API\OfficesManagement.API.csproj", "{474AA196-425A-4E23-9944-C1A18603A4BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.Infrastructure", "src\External\OfficesManagement.Infrastructure\OfficesManagement.Infrastructure.csproj", "{7532B80D-8633-4C5F-93F2-E3D21F9C6669}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.DataAccess", "src\External\OfficesManagement.Infrastructure\OfficesManagement.DataAccess.csproj", "{7532B80D-8633-4C5F-93F2-E3D21F9C6669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.Core", "src\Application\OfficesManagement.Core\OfficesManagement.Core.csproj", "{9EF792B2-C325-4B36-BAB4-7AA85AE7E157}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.BuisnessLogic", "src\Application\OfficesManagement.Core\OfficesManagement.BuisnessLogic.csproj", "{9EF792B2-C325-4B36-BAB4-7AA85AE7E157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
