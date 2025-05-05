@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using OfficesManagement.Core.UseCases;
+using OfficesManagement.BuisnessLogic.DTOs.Requests;
 
 namespace OfficesManagement.Core.Common.Validation;
 

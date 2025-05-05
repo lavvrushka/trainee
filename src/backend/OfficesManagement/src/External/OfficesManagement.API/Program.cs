@@ -10,15 +10,6 @@ builder.Services.AddValidationServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomMiddlewares();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReact", policy =>
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials());
-});
-
 var app = builder.Build();
 
 app.UseCors("AllowReact");

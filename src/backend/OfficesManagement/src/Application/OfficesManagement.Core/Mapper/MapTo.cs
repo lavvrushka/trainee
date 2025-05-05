@@ -1,10 +1,11 @@
-﻿using OfficesManagement.Core.DTOs;
+﻿using OfficesManagement.BuisnessLogic.DTOs.Requests;
+using OfficesManagement.Core.DTOs;
 using OfficesManagement.Core.DTOs.Requests;
 using OfficesManagement.Core.DTOs.Responses;
 using OfficesManagement.Core.Models;
 using OfficesManagement.Core.Models.Entities;
 using OfficesManagement.Core.Models.ValueObjects;
-using OfficesManagement.Core.UseCases;
+
 
 namespace OfficesManagement.Core.Mapper;
 

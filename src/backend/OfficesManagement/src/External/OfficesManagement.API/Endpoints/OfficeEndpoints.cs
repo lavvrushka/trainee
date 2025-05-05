@@ -1,61 +1,99 @@
-﻿using MediatR;
-using OfficesManagement.Core.DTOs.Requests; // Содержит CreateOfficeRequest
-using OfficesManagement.Core.Models.Entities;
-using OfficesManagement.Core.Common.Interfaces.IRepositories;
-using Microsoft.AspNetCore.Builder;
-using OfficesManagement.Core.UseCases;
+﻿using OfficesManagement.BuisnessLogic.Common.Interfaces.IServices;
+using OfficesManagement.BuisnessLogic.DTOs.Requests;
+namespace OfficesManagement.API.Endpoints;
 
-namespace OfficesManagement.API.Endpoints
+public static class OfficeEndpoints
 {
-    public static class OfficeEndpoints
+    public static IEndpointRouteBuilder MapOfficeEndpoints(this IEndpointRouteBuilder routes)
     {
-        public static IEndpointRouteBuilder MapOfficeEndpoints(this IEndpointRouteBuilder routes)
+        var group = routes.MapGroup("/api/offices");
+
+        group.MapGet("/", async (IOfficeService officeService) =>
         {
-            var group = routes.MapGroup("/api/offices");
+            var request = new GetAllOfficesRequest(PageIndex: 1, PageSize: 10);
+            var result = await officeService.GetAllOfficesAsync(request);
 
-            group.MapGet("/", async (IOfficeRepository repo) =>
+            return Results.Ok(result);
+        });
+
+        group.MapGet("/{id:guid}", async (Guid id, IOfficeService officeService) =>
+        {
+            var request = new GetOfficeByIdRequest(id);
+            var officeDto = await officeService.GetOfficeByIdAsync(request);
+
+            return Results.Ok(officeDto);
+        });
+
+        group.MapPost("/", async (CreateOfficeRequest request, IOfficeService officeService) =>
+        {
+            await officeService.CreateOfficeAsync(request);
+
+            return Results.Created($"/api/offices", request);
+        });
+
+        group.MapPut("/{id:guid}", async (Guid id, UpdateOfficeRequest request, IOfficeService officeService) =>
+        {
+            if (id != request.Id)
             {
-                var offices = await repo.GetAllAsync();
-                return Results.Ok(offices);
-            });
+                return Results.BadRequest("Идентификатор в URL не соответствует Id в запросе.");
+            }
+            await officeService.UpdateOfficeAsync(request);
 
-            group.MapGet("/{id:guid}", async (Guid id, IOfficeRepository repo) =>
-            {
-                var office = await repo.GetByIdAsync(id);
-                return office is not null ? Results.Ok(office) : Results.NotFound();
-            });
+            return Results.NoContent();
+        });
 
-            // Используем MediatR для создания офиса
-            group.MapPost("/", async (CreateOfficeRequest request, IMediator mediator) =>
-            {
-                // Отправляем команду на создание офиса
-                await mediator.Send(request);
-                // Можно вернуть LocationHeader с новым ресурсом, если в ответе нет Id
-                return Results.Created($"/api/offices", request);
-            });
+        group.MapDelete("/{id:guid}", async (Guid id, IOfficeService officeService) =>
+        {
+            var request = new DeleteOfficeByIdRequest(id);
+            await officeService.DeleteOfficeByIdAsync(request);
 
-            group.MapPut("/{id:guid}", async (Guid id, Office office, IOfficeRepository repo) =>
-            {
-                if (id != office.Id)
-                {
-                    return Results.BadRequest("Идентификатор не соответствует");
-                }
-                await repo.UpdateAsync(office);
-                return Results.NoContent();
-            });
+            return Results.NoContent();
+        });
 
-            group.MapDelete("/{id:guid}", async (Guid id, IOfficeRepository repo) =>
-            {
-                var office = await repo.GetByIdAsync(id);
-                if (office is null)
-                {
-                    return Results.NotFound();
-                }
-                await repo.DeleteAsync(office);
-                return Results.NoContent();
-            });
+        group.MapGet("/filter", async (
+            string? address,
+            string? city,
+            string? country,
+            string? isActive,
+            IOfficeService officeService) =>
+        {
+            var filterRequest = new FilterOfficesRequest(address, city, country, isActive);
+            var offices = await officeService.FilterOfficesAsync(filterRequest);
 
-            return routes;
-        }
+            return Results.Ok(offices);
+        });
+
+        group.MapGet("/active", async (IOfficeService officeService) => 
+        { 
+            var offices = await officeService.GetActiveOfficesAsync(); 
+
+            return Results.Ok(offices); 
+        });
+
+        group.MapGet("/by-name/{name}", async (string name, IOfficeService officeService) =>
+        {
+            var request = new GetOfficeByNameRequest(name);
+            var officeDto = await officeService.GetOfficeByNameAsync(request);
+
+            return Results.Ok(officeDto);
+        });
+
+        group.MapGet("/by-city/{city}", async (string city, IOfficeService officeService) =>
+        {
+            var request = new GetOfficesByCityRequest(city);
+            var offices = await officeService.GetOfficesByCityAsync(request);
+
+            return Results.Ok(offices);
+        });
+
+        group.MapGet("/by-country/{country}", async (string country, IOfficeService officeService) =>
+        {
+            var request = new GetOfficesByCountryRequest(country);
+            var offices = await officeService.GetOfficesByCountryAsync(request);
+
+            return Results.Ok(offices);
+        });
+
+        return group;
     }
 }

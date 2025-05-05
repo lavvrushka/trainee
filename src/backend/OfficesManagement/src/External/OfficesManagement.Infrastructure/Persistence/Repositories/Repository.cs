@@ -20,6 +20,7 @@ public class MongoRepository<T> : IRepository<T> where T : class
     public async Task<T?> GetByIdAsync(Guid id)
     {
         var filter = Builders<T>.Filter.Eq("Id", id);
+
         return await _collection.Find(filter).FirstOrDefaultAsync();
     }
 
