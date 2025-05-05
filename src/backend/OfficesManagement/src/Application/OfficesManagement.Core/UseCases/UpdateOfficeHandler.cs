@@ -33,7 +33,6 @@ public class UpdateOfficeHandler : IRequestHandler<UpdateOfficeRequest, Unit>
 
         request.MapToOffice(office);
         await _officeRepository.UpdateAsync(office);
-        await _officeRepository.SaveChangesAsync();
 
         return Unit.Value;
     }

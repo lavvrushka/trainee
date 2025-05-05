@@ -17,6 +17,7 @@ public class GetActiveOfficesHandler : IRequestHandler<GetActiveOfficesRequest, 
     public async Task<List<OfficeDto>> Handle(GetActiveOfficesRequest request, CancellationToken cancellationToken)
     {
         var offices = await _officeRepository.GetActiveOfficesAsync();
+
         return offices.Select(o => o.MapToOfficeDto()).ToList();
     }
 }

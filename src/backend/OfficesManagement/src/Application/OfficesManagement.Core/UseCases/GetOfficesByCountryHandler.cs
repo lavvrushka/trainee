@@ -17,6 +17,7 @@ public class GetOfficesByCountryHandler : IRequestHandler<GetOfficesByCountryReq
     public async Task<List<OfficeDto>> Handle(GetOfficesByCountryRequest request, CancellationToken cancellationToken)
     {
         var offices = await _officeRepository.GetOfficesByCountryAsync(request.Country);
+
         return offices.Select(o => o.MapToOfficeDto()).ToList();
     }
 }

@@ -17,6 +17,7 @@ public class GetOfficesByCityHandler : IRequestHandler<GetOfficesByCityRequest, 
     public async Task<List<OfficeDto>> Handle(GetOfficesByCityRequest request, CancellationToken cancellationToken)
     {
         var offices = await _officeRepository.GetOfficesByCityAsync(request.City);
+
         return offices.Select(o => o.MapToOfficeDto()).ToList();
     }
 }
