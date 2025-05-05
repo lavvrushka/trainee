@@ -1,15 +1,15 @@
 ﻿using MongoDB.Driver;
 using OfficesManagement.Core.Common.Interfaces.IRepositories;
 using OfficesManagement.Infrastructure.Persistence.Contexts;
+namespace OfficesManagement.Infrastructure.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class MongoRepository<T> : IRepository<T> where T : class
 {
     protected readonly IMongoCollection<T> _collection;
 
-    public Repository(MongoDbContext context)
+    public MongoRepository(MongoDbContext context, string collectionName)
     {
-        var collectionName = typeof(T).Name + "s";
-        _collection = context.Database.GetCollection<T>(collectionName);
+        _collection = context.GetCollection<T>(collectionName);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -30,25 +30,17 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task UpdateAsync(T entity)
     {
-        var idProp = entity.GetType().GetProperty("Id");
-        if (idProp == null) throw new InvalidOperationException("Missing Id property");
-        var id = (Guid)idProp.GetValue(entity)!;
-        await _collection.ReplaceOneAsync(
-            Builders<T>.Filter.Eq("Id", id),
-            entity);
+        var propertyInfo = entity.GetType().GetProperty("Id");
+        var id = (Guid)propertyInfo.GetValue(entity, null)!;
+        var filter = Builders<T>.Filter.Eq("Id", id);
+        await _collection.ReplaceOneAsync(filter, entity);
     }
 
     public async Task DeleteAsync(T entity)
     {
-        var idProp = entity.GetType().GetProperty("Id");
-        if (idProp == null) throw new InvalidOperationException("Missing Id property");
-        var id = (Guid)idProp.GetValue(entity)!;
-        await _collection.DeleteOneAsync(
-            Builders<T>.Filter.Eq("Id", id));
-    }
-
-    public Task SaveChangesAsync()
-    {
-        return Task.CompletedTask;
+        var propertyInfo = entity.GetType().GetProperty("Id");
+        var id = (Guid)propertyInfo.GetValue(entity, null)!;
+        var filter = Builders<T>.Filter.Eq("Id", id);
+        await _collection.DeleteOneAsync(filter);
     }
 }
