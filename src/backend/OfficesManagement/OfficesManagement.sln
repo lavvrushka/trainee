@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.API", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.DataAccess", "src\External\OfficesManagement.Infrastructure\OfficesManagement.DataAccess.csproj", "{7532B80D-8633-4C5F-93F2-E3D21F9C6669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.BuisnessLogic", "src\Application\OfficesManagement.Core\OfficesManagement.BuisnessLogic.csproj", "{9EF792B2-C325-4B36-BAB4-7AA85AE7E157}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesManagement.BusinessLogic", "src\Application\OfficesManagement.Core\OfficesManagement.BusinessLogic.csproj", "{9EF792B2-C325-4B36-BAB4-7AA85AE7E157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

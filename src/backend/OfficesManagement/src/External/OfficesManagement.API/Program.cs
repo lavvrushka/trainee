@@ -1,6 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddIdentityConfiguration();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
