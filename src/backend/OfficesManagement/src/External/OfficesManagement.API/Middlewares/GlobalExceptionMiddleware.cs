@@ -52,6 +52,14 @@ public class GlobalExceptionMiddleware : IMiddleware
     private static (HttpStatusCode statusCode, object response) GetErrorResponse(Exception exception) =>
         exception switch
         {
+
+            OfficesManagement.Core.Common.Exceptions.NotFoundException nf => (
+            HttpStatusCode.NotFound,
+            new
+            {
+                message = nf.Message,
+                details = (object?)null
+            }),
             ValidationException validationException => (
                 HttpStatusCode.BadRequest,
                 new
