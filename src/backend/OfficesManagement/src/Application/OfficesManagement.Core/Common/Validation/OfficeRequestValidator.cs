@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using OfficesManagement.BuisnessLogic.DTOs.Requests;
 
 namespace OfficesManagement.Core.Common.Validation;
 
