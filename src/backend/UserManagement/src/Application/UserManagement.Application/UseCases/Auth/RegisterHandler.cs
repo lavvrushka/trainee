@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using UserManagement.Application.DTOs.Responses;
 using UserManagement.Domain.Interfaces.IServices;
 using UserManagement.Domain.Interfaces.Models;
+using UserManagement.Domain.Interfaces.Enums; 
+
 namespace UserManagement.Application.UseCases.AuthUsecases;
 
 public record UserRegisterRequest(
-string Email,
-string Password,
-string ConfirmPassword) : IRequest<UserAuthResponse>;
+    string Email,
+    string Password,
+    string ConfirmPassword) : IRequest<UserAuthResponse>;
+
 public class RegisterUserHandler : IRequestHandler<UserRegisterRequest, UserAuthResponse>
 {
     private readonly UserManager<Account> _userManager;
@@ -29,11 +32,16 @@ public class RegisterUserHandler : IRequestHandler<UserRegisterRequest, UserAuth
 
     public async Task<UserAuthResponse> Handle(UserRegisterRequest request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        if (request.Password != request.ConfirmPassword)
+        {
+            throw new ArgumentException("Пароли не совпадают");
+        }
+
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
 
         if (existingUser != null)
         {
-            throw new InvalidOperationException("Пользователь с таким email уже зарегистрирован.");
+            throw new InvalidOperationException("Пользователь с таким email уже зарегистрирован");
         }
 
         var newUser = new Account
@@ -52,26 +60,28 @@ public class RegisterUserHandler : IRequestHandler<UserRegisterRequest, UserAuth
             throw new Exception($"Ошибка создания пользователя: {errors}");
         }
 
-        const string defaultRole = "PATIENT";
+        var defaultRoleName = RoleType.Patient.ToString().ToUpper();
 
-        if (!await _roleManager.RoleExistsAsync(defaultRole))
+        if (!await _roleManager.RoleExistsAsync(defaultRoleName))
         {
-            throw new Exception($"Роль {defaultRole} не существует в системе.");
+            throw new Exception($"Роль {defaultRoleName} не существует в системе");
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(newUser, defaultRole);
+            var roleResult = await _userManager.AddToRoleAsync(newUser, defaultRoleName);
 
         if (!roleResult.Succeeded)
         {
             var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
             throw new Exception($"Ошибка назначения роли: {errors}");
         }
-        var newConfirmationToken = await _emailConfirmationService.GenerateEmailConfirmationTokenAsync(newUser.Id);
-        newUser.EmailConfirmationToken = newConfirmationToken;
+
+        var confirmationToken = await _emailConfirmationService.GenerateEmailConfirmationTokenAsync(newUser.Id);
+        newUser.EmailConfirmationToken = confirmationToken;
+        await _userManager.UpdateAsync(newUser); 
         await _emailConfirmationService.SendConfirmationEmailAsync(newUser.Id);
 
-        var tokensPair = await _tokenService.GenerateTokensPairAsync(newUser);
+        var tokens = await _tokenService.GenerateTokensPairAsync(newUser);
 
-        return tokensPair.MapToUserAuthResponse();
+        return tokens.MapToUserAuthResponse();
     }
 }

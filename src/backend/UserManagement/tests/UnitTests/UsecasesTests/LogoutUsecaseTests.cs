@@ -1,37 +1,63 @@
-﻿using MediatR;
+﻿using FluentAssertions;
+using MediatR;
 using Moq;
 using UserManagement.Application.UseCases.Auth;
 using UserManagement.Domain.Interfaces.IServices;
+
 namespace UserManagement.Application.Tests.UseCases.Auth;
 
-public class LogoutHandlerTests
+public class LogoutHandlerFixture
 {
-    private readonly Mock<ITokenService> _tokenServiceMock;
-    private readonly LogoutHandler _handler;
+    public Mock<ITokenService> TokenServiceMock { get; }
+    public LogoutHandler Handler { get; }
 
-    public LogoutHandlerTests()
+    public LogoutHandlerFixture()
     {
-        _tokenServiceMock = new Mock<ITokenService>();
-        _handler = new LogoutHandler(_tokenServiceMock.Object);
+        TokenServiceMock = new Mock<ITokenService>();
+        Handler = new LogoutHandler(TokenServiceMock.Object);
     }
 
-    [Fact]
+    public void ResetMocks()
+    {
+        TokenServiceMock.Invocations.Clear();
+        TokenServiceMock.Reset(); 
+    }
+}
+
+public class LogoutHandlerTests : IClassFixture<LogoutHandlerFixture>
+{
+    private readonly LogoutHandlerFixture _fixture;
+
+    public LogoutHandlerTests(LogoutHandlerFixture fixture)
+    {
+        _fixture = fixture;
+        _fixture.ResetMocks(); 
+    }
+
+    [Fact(DisplayName = "Logout → вызывает RevokeRefreshTokenAsync один раз и возвращает Unit")]
     public async Task Handle_CallsRevokeRefreshTokenAsync_AndReturnsUnit()
     {
-        var result = await _handler.Handle(new LogoutRequest(), CancellationToken.None);
+        // Act
+        var result = await _fixture.Handler.Handle(new LogoutRequest(), CancellationToken.None);
 
-        _tokenServiceMock.Verify(x => x.RevokeRefreshTokenAsync(), Times.Once);
-        Assert.Equal(Unit.Value, result);
+        // Assert
+        _fixture.TokenServiceMock.Verify(x => x.RevokeRefreshTokenAsync(), Times.Once);
+        result.Should().Be(Unit.Value);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Logout → если Revoke выбрасывает исключение, оно пробрасывается")]
     public async Task Handle_WhenRevokeThrows_PropagatesException()
     {
-        _tokenServiceMock
+        // Arrange
+        _fixture.TokenServiceMock
             .Setup(x => x.RevokeRefreshTokenAsync())
             .ThrowsAsync(new InvalidOperationException("Revoke failed"));
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(new LogoutRequest(), CancellationToken.None));
+        // Act
+        Func<Task> act = () => _fixture.Handler.Handle(new LogoutRequest(), CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Revoke failed");
     }
 }

@@ -23,12 +23,12 @@ public class LoginHandler(
 
         if (user is null)
         {
-            throw new InvalidCredentialsException();
+            throw new InvalidCredentialsException("Неверные учетные данные.");
         }
 
         if (!await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            throw new InvalidCredentialsException();
+            throw new InvalidCredentialsException("Неверные учетные данные.");
         }
 
         var tokensPair = await _tokenService.GenerateTokensPairAsync(user);

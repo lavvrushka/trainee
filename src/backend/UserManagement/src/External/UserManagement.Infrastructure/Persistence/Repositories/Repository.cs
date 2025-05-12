@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserManagement.Domain.Interfaces.IRepositories;
 using UserManagement.Infrastructure.Persistence.Context;
+
 namespace UserManagement.Infrastructure.Persistence.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class
@@ -14,7 +15,7 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<List<T>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();
     }

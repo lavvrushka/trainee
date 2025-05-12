@@ -1,179 +1,241 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UserManagement.Application.UseCases.AuthUsecases;
 using UserManagement.Domain.Interfaces.IServices;
 using UserManagement.Domain.Interfaces.Models;
-namespace UserManagement.Application.Tests.UseCases.Auth;
 
-public class RegisterUserHandlerTests
+namespace UserManagement.Application.Tests.UseCases.Auth
 {
-    private readonly Mock<UserManager<Account>> _userManagerMock;
-    private readonly Mock<RoleManager<Role>> _roleManagerMock;
-    private readonly Mock<ITokenService> _tokenServiceMock;
-    private readonly Mock<IEmailConfirmationService> _emailConfirmationServiceMock;
-    private readonly RegisterUserHandler _handler;
-
-    private const string DefaultRole = "PATIENT";
-    private const string Email = "newuser@example.com";
-    private const string Password = "Password123!";
-
-    public RegisterUserHandlerTests()
+    public class RegisterUserHandlerTestsFixture
     {
-        var userStoreMock = new Mock<IUserStore<Account>>();
-        _userManagerMock = new Mock<UserManager<Account>>(userStoreMock.Object,
-            null, null, null, null, null, null, null, null);
+        public Mock<UserManager<Account>> UserManagerMock { get; }
+        public Mock<RoleManager<Role>> RoleManagerMock { get; }
+        public Mock<ITokenService> TokenServiceMock { get; }
+        public Mock<IEmailConfirmationService> EmailConfirmationServiceMock { get; }
+        public RegisterUserHandler Handler { get; }
 
-        var roleStoreMock = new Mock<IRoleStore<Role>>();
-        var loggerMock = new Mock<ILogger<RoleManager<Role>>>();
-        _roleManagerMock = new Mock<RoleManager<Role>>(roleStoreMock.Object,
-            new List<IRoleValidator<Role>>(), new UpperInvariantLookupNormalizer(),
-            new IdentityErrorDescriber(), loggerMock.Object);
-
-        _tokenServiceMock = new Mock<ITokenService>();
-        _emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
-
-        _handler = new RegisterUserHandler(
-            _userManagerMock.Object,
-            _roleManagerMock.Object,
-            _tokenServiceMock.Object,
-            _emailConfirmationServiceMock.Object);
-    }
-
-    [Fact]
-    public async Task Handle_ExistingUser_ThrowsInvalidOperationException()
-    {
-        _userManagerMock
-            .Setup(x => x.FindByEmailAsync(Email))
-            .ReturnsAsync(new Account { Email = Email });
-
-        var request = new UserRegisterRequest(Email, Password, Password);
-
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(request, CancellationToken.None));
-        Assert.Contains("Пользователь с таким email уже зарегистрирован", ex.Message);
-    }
-
-    [Fact]
-    public async Task Handle_CreateFails_ThrowsExceptionWithErrors()
-    {
-        _userManagerMock
-            .Setup(x => x.FindByEmailAsync(Email))
-            .ReturnsAsync((Account)null);
-
-        var identityErrors = new[]
+        public RegisterUserHandlerTestsFixture()
         {
-            new IdentityError { Description = "Error1" },
-            new IdentityError { Description = "Error2" }
-        };
-        _userManagerMock
-            .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
-            .ReturnsAsync(IdentityResult.Failed(identityErrors));
+            var userStore = new Mock<IUserStore<Account>>().Object;
+            UserManagerMock = new Mock<UserManager<Account>>(
+                userStore, null, null, null, null, null, null, null, null);
 
-        var request = new UserRegisterRequest(Email, Password, Password);
+            var roleStore = new Mock<IRoleStore<Role>>().Object;
+            RoleManagerMock = new Mock<RoleManager<Role>>(
+                roleStore,
+                new List<IRoleValidator<Role>>(),
+                new UpperInvariantLookupNormalizer(),
+                new IdentityErrorDescriber(),
+                new Mock<ILogger<RoleManager<Role>>>().Object);
 
-        var ex = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(request, CancellationToken.None));
-        Assert.Contains("Ошибка создания пользователя: Error1, Error2", ex.Message);
+            TokenServiceMock = new Mock<ITokenService>();
+            EmailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
+
+            Handler = new RegisterUserHandler(
+                UserManagerMock.Object,
+                RoleManagerMock.Object,
+                TokenServiceMock.Object,
+                EmailConfirmationServiceMock.Object);
+        }
     }
 
-    [Fact]
-    public async Task Handle_RoleNotExists_ThrowsException()
+    public class RegisterUserHandlerTests : IClassFixture<RegisterUserHandlerTestsFixture>
     {
-        _userManagerMock
-            .Setup(x => x.FindByEmailAsync(Email))
-            .ReturnsAsync((Account)null);
-        _userManagerMock
-            .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
-            .ReturnsAsync(IdentityResult.Success);
-        _roleManagerMock
-            .Setup(x => x.RoleExistsAsync(DefaultRole))
-            .ReturnsAsync(false);
+        private readonly RegisterUserHandlerTestsFixture _f;
 
-        var request = new UserRegisterRequest(Email, Password, Password);
+        private const string Email = "newuser@example.com";
+        private const string Password = "Password123!";
+        private const string ConfirmPassword = "Password123!";
+        private const string DefaultRole = "PATIENT";
 
-        var ex = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(request, CancellationToken.None));
-        Assert.Contains($"Роль {DefaultRole} не существует в системе", ex.Message);
-    }
-
-    [Fact]
-    public async Task Handle_AddToRoleFails_ThrowsExceptionWithErrors()
-    {
-        _userManagerMock
-            .Setup(x => x.FindByEmailAsync(Email))
-            .ReturnsAsync((Account)null);
-        _userManagerMock
-            .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
-            .ReturnsAsync(IdentityResult.Success);
-        _roleManagerMock
-            .Setup(x => x.RoleExistsAsync(DefaultRole))
-            .ReturnsAsync(true);
-
-        var roleErrors = new[] { new IdentityError { Description = "RoleError" } };
-        _userManagerMock
-            .Setup(x => x.AddToRoleAsync(It.IsAny<Account>(), DefaultRole))
-            .ReturnsAsync(IdentityResult.Failed(roleErrors));
-
-        var request = new UserRegisterRequest(Email, Password, Password);
-
-        var ex = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(request, CancellationToken.None));
-        Assert.Contains("Ошибка назначения роли: RoleError", ex.Message);
-    }
-
-    [Fact]
-    public async Task Handle_SuccessfulRegistration_ReturnsUserAuthResponse()
-    {
-        var userId = Guid.NewGuid();
-        _userManagerMock
-            .Setup(x => x.FindByEmailAsync(Email))
-            .ReturnsAsync((Account)null);
-
-        _userManagerMock
-            .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
-            .Callback<Account, string>((user, pwd) => user.Id = userId)
-            .ReturnsAsync(IdentityResult.Success);
-
-        _roleManagerMock
-            .Setup(x => x.RoleExistsAsync(DefaultRole))
-            .ReturnsAsync(true);
-
-        _userManagerMock
-            .Setup(x => x.AddToRoleAsync(It.IsAny<Account>(), DefaultRole))
-            .ReturnsAsync(IdentityResult.Success);
-
-        _emailConfirmationServiceMock
-            .Setup(x => x.GenerateEmailConfirmationTokenAsync(userId))
-            .ReturnsAsync("email-token");
-        _emailConfirmationServiceMock
-            .Setup(x => x.SendConfirmationEmailAsync(userId))
-            .Returns(Task.CompletedTask);
-
-        var tokenPair = new TokensPair
+        public RegisterUserHandlerTests(RegisterUserHandlerTestsFixture fixture)
         {
-            AccessToken = "access-token",
-            RefreshToken = "refresh-token"
-        };
-        _tokenServiceMock
-            .Setup(x => x.GenerateTokensPairAsync(It.IsAny<Account>()))
-            .ReturnsAsync(tokenPair);
+            _f = fixture;
+            _f.UserManagerMock.Invocations.Clear();
+            _f.RoleManagerMock.Invocations.Clear();
+            _f.TokenServiceMock.Invocations.Clear();
+            _f.EmailConfirmationServiceMock.Invocations.Clear();
+        }
 
-        var request = new UserRegisterRequest(Email, Password, Password);
+        [Theory(DisplayName = "Если email уже занят → бросается InvalidOperationException")]
+        [InlineData("existing@example.com")]
+        public async Task Handle_WhenUserExists_ThrowsInvalidOperationException(string existingEmail)
+        {
+            // Arrange
+            _f.UserManagerMock
+              .Setup(x => x.FindByEmailAsync(existingEmail))
+              .ReturnsAsync(new Account { Email = existingEmail });
 
-        var result = await _handler.Handle(request, CancellationToken.None);
+            var request = new UserRegisterRequest(existingEmail, Password, ConfirmPassword);
 
-        Assert.Equal(tokenPair.AccessToken, result.AccessToken);
-        Assert.Equal(tokenPair.RefreshToken, result.RefreshToken);
+            // Act
+            Func<Task> act = () => _f.Handler.Handle(request, CancellationToken.None);
 
-        _userManagerMock.Verify(x => x.CreateAsync(
-            It.Is<Account>(u => u.Email == Email && u.UserName == Email && u.Id == userId), Password), Times.Once);
-        _roleManagerMock.Verify(x => x.RoleExistsAsync(DefaultRole), Times.Once);
-        _userManagerMock.Verify(x => x.AddToRoleAsync(
-            It.Is<Account>(u => u.Id == userId), DefaultRole), Times.Once);
-        _emailConfirmationServiceMock.Verify(x => x.GenerateEmailConfirmationTokenAsync(userId), Times.Once);
-        _emailConfirmationServiceMock.Verify(x => x.SendConfirmationEmailAsync(userId), Times.Once);
-        _tokenServiceMock.Verify(x => x.GenerateTokensPairAsync(
-            It.Is<Account>(u => u.Id == userId)), Times.Once);
+            // Assert
+            await act
+                .Should()
+                .ThrowAsync<InvalidOperationException>()
+                .WithMessage("*Пользователь с таким email уже зарегистрирован*");
+        }
+
+        [Theory(DisplayName = "Несовпадение паролей → бросается ArgumentException")]
+        [InlineData("pass1", "pass2")]
+        public async Task Handle_WhenPasswordsDoNotMatch_ThrowsArgumentException(string pwd, string confirm)
+        {
+            // Arrange
+            var request = new UserRegisterRequest(Email, pwd, confirm);
+
+            // Act
+            Func<Task> act = () => _f.Handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            await act
+                .Should()
+                .ThrowAsync<ArgumentException>()
+                .WithMessage("*Пароли не совпадают*");
+        }
+
+        [Fact(DisplayName = "Ошибка создания пользователя при IdentityResult.Failed")]
+        public async Task Handle_CreateFails_ShouldThrowExceptionWithErrors()
+        {
+            // Arrange
+            _f.UserManagerMock
+              .Setup(x => x.FindByEmailAsync(Email))
+              .ReturnsAsync((Account)null);
+
+            var identityErrors = new[]
+            {
+                new IdentityError { Description = "Error1" },
+                new IdentityError { Description = "Error2" }
+            };
+            _f.UserManagerMock
+              .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
+              .ReturnsAsync(IdentityResult.Failed(identityErrors));
+
+            var request = new UserRegisterRequest(Email, Password, ConfirmPassword);
+
+            // Act
+            Func<Task> act = () => _f.Handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            await act
+                .Should()
+                .ThrowAsync<Exception>()
+                .WithMessage($"Ошибка создания пользователя: Error1, Error2");
+        }
+
+        [Fact(DisplayName = "Роль не найдена → бросается Exception")]
+        public async Task Handle_RoleNotExists_ShouldThrowException()
+        {
+            // Arrange
+            _f.UserManagerMock
+              .Setup(x => x.FindByEmailAsync(Email))
+              .ReturnsAsync((Account)null);
+            _f.UserManagerMock
+              .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
+              .ReturnsAsync(IdentityResult.Success);
+            _f.RoleManagerMock
+              .Setup(r => r.RoleExistsAsync(DefaultRole))
+              .ReturnsAsync(false);
+
+            var request = new UserRegisterRequest(Email, Password, ConfirmPassword);
+
+            // Act
+            Func<Task> act = () => _f.Handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            await act
+                .Should()
+                .ThrowAsync<Exception>()
+                .WithMessage($"Роль {DefaultRole} не существует в системе");
+        }
+
+        [Fact(DisplayName = "Ошибка назначения роли → бросается Exception с описанием")]
+        public async Task Handle_AddToRoleFails_ShouldThrowExceptionWithErrors()
+        {
+            // Arrange
+            _f.UserManagerMock
+              .Setup(x => x.FindByEmailAsync(Email))
+              .ReturnsAsync((Account)null);
+            _f.UserManagerMock
+              .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
+              .ReturnsAsync(IdentityResult.Success);
+            _f.RoleManagerMock
+              .Setup(r => r.RoleExistsAsync(DefaultRole))
+              .ReturnsAsync(true);
+
+            var roleErrors = new[] { new IdentityError { Description = "RoleError" } };
+            _f.UserManagerMock
+              .Setup(x => x.AddToRoleAsync(It.IsAny<Account>(), DefaultRole))
+              .ReturnsAsync(IdentityResult.Failed(roleErrors));
+
+            var request = new UserRegisterRequest(Email, Password, ConfirmPassword);
+
+            // Act
+            Func<Task> act = () => _f.Handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            await act
+                .Should()
+                .ThrowAsync<Exception>()
+                .WithMessage($"Ошибка назначения роли: RoleError");
+        }
+
+        [Fact(DisplayName = "Успешная регистрация возвращает токены и отправляет письмо")]
+        public async Task Handle_SuccessfulRegistration_ReturnsTokensAndSendsEmail()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            _f.UserManagerMock
+              .Setup(x => x.FindByEmailAsync(Email))
+              .ReturnsAsync((Account)null);
+            _f.UserManagerMock
+              .Setup(x => x.CreateAsync(It.IsAny<Account>(), Password))
+              .Callback<Account, string>((u, p) => u.Id = userId)
+              .ReturnsAsync(IdentityResult.Success);
+            _f.RoleManagerMock
+              .Setup(r => r.RoleExistsAsync(DefaultRole))
+              .ReturnsAsync(true);
+            _f.UserManagerMock
+              .Setup(u => u.AddToRoleAsync(It.IsAny<Account>(), DefaultRole))
+              .ReturnsAsync(IdentityResult.Success);
+
+            _f.EmailConfirmationServiceMock
+              .Setup(s => s.GenerateEmailConfirmationTokenAsync(userId))
+              .ReturnsAsync("email-token");
+            _f.EmailConfirmationServiceMock
+              .Setup(s => s.SendConfirmationEmailAsync(userId))
+              .Returns(Task.CompletedTask);
+
+            var tokens = new TokensPair { AccessToken = "A", RefreshToken = "R" };
+            _f.TokenServiceMock
+              .Setup(t => t.GenerateTokensPairAsync(It.IsAny<Account>()))
+              .ReturnsAsync(tokens);
+
+            var request = new UserRegisterRequest(Email, Password, ConfirmPassword);
+
+            // Act
+            var result = await _f.Handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            result.AccessToken.Should().Be(tokens.AccessToken);
+            result.RefreshToken.Should().Be(tokens.RefreshToken);
+
+            _f.UserManagerMock.Verify(u => u.CreateAsync(
+                It.Is<Account>(ac => ac.Email == Email && ac.UserName == Email && ac.Id == userId),
+                Password), Times.Once);
+            _f.RoleManagerMock.Verify(r => r.RoleExistsAsync(DefaultRole), Times.Once);
+            _f.UserManagerMock.Verify(u => u.AddToRoleAsync(
+                It.Is<Account>(ac => ac.Id == userId), DefaultRole), Times.Once);
+            _f.EmailConfirmationServiceMock.Verify(s =>
+                s.GenerateEmailConfirmationTokenAsync(userId), Times.Once);
+            _f.EmailConfirmationServiceMock.Verify(s =>
+                s.SendConfirmationEmailAsync(userId), Times.Once);
+            _f.TokenServiceMock.Verify(t =>
+                t.GenerateTokensPairAsync(It.Is<Account>(ac => ac.Id == userId)), Times.Once);
+        }
     }
 }
