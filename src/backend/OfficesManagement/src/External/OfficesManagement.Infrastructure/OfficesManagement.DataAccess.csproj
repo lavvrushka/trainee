@@ -11,8 +11,4 @@
     <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Application\OfficesManagement.Core\OfficesManagement.BusinessLogic.csproj" />
-  </ItemGroup>
-
 </Project>
