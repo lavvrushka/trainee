@@ -21,10 +21,8 @@ public class OfficeEndpointsTests : IAsyncLifetime
 
     public OfficeEndpointsTests()
     {
-        // Запускаем временную MongoDB
         _mongoRunner = MongoDbRunner.Start(singleNodeReplSet: true);
 
-        // Создаём WebApplicationFactory, подменяя Mongo-конфиг
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
@@ -49,7 +47,6 @@ public class OfficeEndpointsTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        // Чистим коллекцию Offices перед каждым тестом
         var client = new MongoClient(_mongoRunner.ConnectionString);
         var db = client.GetDatabase("TestDb");
         await db.DropCollectionAsync("Offices");
@@ -58,7 +55,6 @@ public class OfficeEndpointsTests : IAsyncLifetime
     [Fact(DisplayName = "POST /api/offices -> 201 Created; then GET /api/offices returns created item")]
     public async Task CreateAndGetAll_ReturnsCreatedOffice()
     {
-        // Arrange: используем уникальное имя, чтобы наверняка отличить
         var uniqueName = "Integration Office " + Guid.NewGuid();
         var createReq = new CreateOfficeRequest(
             Name: uniqueName,
@@ -83,7 +79,6 @@ public class OfficeEndpointsTests : IAsyncLifetime
         using var stream = await getResponse.Content.ReadAsStreamAsync();
         using var doc = await JsonDocument.ParseAsync(stream);
 
-        // Десериализуем только items
         var itemsElement = doc.RootElement.GetProperty("items");
         var offices = itemsElement.Deserialize<OfficeDto[]>(new JsonSerializerOptions
         {
@@ -91,7 +86,6 @@ public class OfficeEndpointsTests : IAsyncLifetime
         });
 
         offices.Should().NotBeNull();
-        // Ищем наш именно один уникальный офис
         offices!
             .Where(o => o.Name == uniqueName)
             .Should().ContainSingle(o =>
