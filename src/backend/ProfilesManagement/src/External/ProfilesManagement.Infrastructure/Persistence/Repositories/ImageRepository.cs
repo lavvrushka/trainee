@@ -1,14 +1,48 @@
-﻿using Microsoft.EntityFrameworkCore;
-
+﻿using System.Data;
+using Dapper;
 namespace ProfilesManagement.Infrastructure.Persistence.Repositories;
 
-public class ImageRepository : Repository<Image>, IImageRepository
+public class ImageDapperRepository : IImageRepository
 {
-    public ImageRepository(ProductManagementDbContext context) : base(context) { }
+    private readonly IDbConnectionFactory _factory;
+    public ImageDapperRepository(IDbConnectionFactory factory)
+        => _factory = factory;
 
-    public async Task<Guid> AddImageToProductAsync(Image image)
+    private IDbConnection Connection
     {
-        await _context.Set<Image>().AddAsync(image);
+        get
+        {
+            var conn = _factory.CreateConnection();
+            conn.Open();
+
+            return conn;
+        }
+    }
+
+    public async Task<Guid> AddAsync(Image image)
+    {
+        const string sql = @"
+        INSERT INTO ""Images"" (""Id"", ""ImageData"", ""ImageType"")
+        VALUES (@Id, @ImageData, @ImageType)";
+        using var db = Connection;
+        await db.ExecuteAsync(sql, image);
+
         return image.Id;
+    }
+
+    public async Task<Image?> GetByIdAsync(Guid id)
+    {
+        const string sql = @"SELECT * FROM ""Images"" WHERE ""Id"" = @id";
+        using var db = Connection;
+
+        return await db.QueryFirstOrDefaultAsync<Image>(sql, new { id });
+    }
+
+    public Task RemoveAsync(Guid id)
+    {
+        const string sql = @"DELETE FROM ""Images"" WHERE ""Id"" = @id";
+        using var db = Connection;
+
+        return db.ExecuteAsync(sql, new { id });
     }
 }
