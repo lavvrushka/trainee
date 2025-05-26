@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProfilesManagement.Infrastructure.Persistence.Configurations;
 namespace ProfilesManagement.Infrastructure.Persistence.Context;
 
 public class ProfileManagementDbContext : DbContext
@@ -11,5 +12,11 @@ public class ProfileManagementDbContext : DbContext
     public DbSet<Doctor> Doctors { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new DoctorConfiguration());
+        modelBuilder.ApplyConfiguration(new PatientConfiguration());
+        modelBuilder.ApplyConfiguration(new ReceptionistConfiguration());
+        modelBuilder.ApplyConfiguration(new ImageConfiguration());
+
+        base.OnModelCreating(modelBuilder);
     }
 }
