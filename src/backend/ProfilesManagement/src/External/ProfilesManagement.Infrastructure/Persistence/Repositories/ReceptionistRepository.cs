@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ProfilesManagement.Infrastructure.Persistence.Factories;
 using System.Data;
 namespace ProfilesManagement.Infrastructure.Persistence.Repositories;
 

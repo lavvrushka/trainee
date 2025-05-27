@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dapper;
+using ProfilesManagement.Infrastructure.Persistence.Factories;
 namespace ProfilesManagement.Infrastructure.Persistence.Repositories;
 
 public class ImageDapperRepository : IImageRepository
