@@ -1,5 +1,6 @@
 ﻿namespace ProfilesManagement.Application.Common.Interfaces.IRepositories;
 
-class IReceptionistRepository
+public interface IReceptionistRepository : IRepository<Receptionist>
 {
+    Task<IEnumerable<Receptionist>> SearchByNameAsync(string name);
 }

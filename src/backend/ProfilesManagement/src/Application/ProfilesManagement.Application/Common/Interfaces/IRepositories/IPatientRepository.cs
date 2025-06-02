@@ -1,5 +1,6 @@
 ﻿namespace ProfilesManagement.Application.Common.Interfaces.IRepositories;
 
-class IPatientRepository
+public interface IPatientRepository : IRepository<Patient>
 {
+    Task<IEnumerable<Patient>> SearchByNameAsync(string name);
 }
