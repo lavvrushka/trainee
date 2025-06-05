@@ -1,5 +1,4 @@
-﻿using MyMediator.Interfaces;
-using ProfilesManagement.Application.Common.Interfaces.IRepositories;
+﻿using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 namespace ProfilesManagement.Application.UseCases.Doctor;
 
 public class CreateDoctorHandler : IRequestHandler<CreateDoctorCommand, Guid>
