@@ -17,6 +17,7 @@ public class CreateDoctorHandler : IRequestHandler<CreateDoctorCommand, Guid>
             Id = Guid.NewGuid(),
             FirstName = request.FirstName,
             LastName = request.LastName,
+
             MiddleName = request.MiddleName,
             AccountId = request.AccountId,
             OfficeId = request.OfficeId,
