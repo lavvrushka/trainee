@@ -3,9 +3,9 @@ using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 
 namespace ProfilesManagement.Application.UseCases.Patient
 {
-    public record DeletePatientRequest(Guid Id) : IRequest<bool>;
+    public record DeletePatientRequest(Guid Id) : IRequest<Unit>;
 
-    public class DeletePatientHandler : IRequestHandler<DeletePatientRequest, bool>
+    public class DeletePatientHandler : IRequestHandler<DeletePatientRequest, Unit>
     {
         private readonly IPatientRepository _repository;
 
@@ -14,7 +14,7 @@ namespace ProfilesManagement.Application.UseCases.Patient
             _repository = repository;
         }
 
-        public async Task<bool> HandleAsync(DeletePatientRequest request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeletePatientRequest request, CancellationToken cancellationToken)
         {
             var existing = await _repository.GetByIdAsync(request.Id);
 
@@ -25,7 +25,7 @@ namespace ProfilesManagement.Application.UseCases.Patient
 
             await _repository.DeleteAsync(existing);
 
-            return true;
+            return Unit.Value;
         }
     }
 }

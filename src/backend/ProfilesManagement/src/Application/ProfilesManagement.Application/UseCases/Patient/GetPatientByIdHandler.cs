@@ -14,7 +14,7 @@ public class GetPatientByIdHandler : IRequestHandler<GetPatientByIdRequest, Pati
         _repository = repository;
     }
 
-    public async Task<PatientDto> HandleAsync(GetPatientByIdRequest request, CancellationToken cancellationToken)
+    public async Task<PatientDto> Handle(GetPatientByIdRequest request, CancellationToken cancellationToken)
     {
         var patient = await _repository.GetByIdAsync(request.Id);
 

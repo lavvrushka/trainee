@@ -4,9 +4,9 @@ using ProfilesManagement.Application.DTOs;
 
 namespace ProfilesManagement.Application.UseCases.Patient;
 
-public record UpdatePatientRequest(PatientDto Patient) : IRequest;
+public record UpdatePatientRequest(PatientDto Patient) : IRequest<Unit>;
 
-public class UpdatePatientHandler : IRequestHandler<UpdatePatientRequest>
+public class UpdatePatientHandler : IRequestHandler<UpdatePatientRequest,Unit>
 {
     private readonly IPatientRepository _repository;
 
@@ -15,7 +15,7 @@ public class UpdatePatientHandler : IRequestHandler<UpdatePatientRequest>
         _repository = repository;
     }
 
-    public async Task<Unit> HandleAsync(UpdatePatientRequest request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdatePatientRequest request, CancellationToken cancellationToken)
     {
         var dto = request.Patient;
         var existing = await _repository.GetByIdAsync(dto.Id);
