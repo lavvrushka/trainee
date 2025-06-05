@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Application\OfficesManagement.Core\OfficesManagement.BusinessLogic.csproj" />
+    <ProjectReference Include="..\OfficesManagement.Infrastructure\OfficesManagement.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1" />
