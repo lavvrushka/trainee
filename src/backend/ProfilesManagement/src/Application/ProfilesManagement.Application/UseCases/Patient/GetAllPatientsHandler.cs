@@ -14,7 +14,7 @@ public class GetAllPatientsHandler : IRequestHandler<GetAllPatientsRequest, (Lis
         _repository = repository;
     }
 
-    public async Task<(List<PatientDto> Patients, int TotalCount)> Handle(GetAllPatientsRequest request, CancellationToken cancellationToken)
+    public async Task<(List<PatientDto> Patients, int TotalCount)> HandleAsync(GetAllPatientsRequest request, CancellationToken cancellationToken)
     {
         var patients = await _repository.GetAllAsync();
         var totalCount = patients.Count;

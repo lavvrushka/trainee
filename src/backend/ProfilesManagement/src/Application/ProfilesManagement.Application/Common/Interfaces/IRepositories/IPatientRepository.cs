@@ -2,5 +2,5 @@
 
 public interface IPatientRepository : IRepository<Patient>
 {
-    Task<IEnumerable<Patient>> SearchByNameAsync(string name);
+    Task<List<Patient>> SearchByNameAsync(string name);
 }

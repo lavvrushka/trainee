@@ -2,5 +2,5 @@
 
 public interface IReceptionistRepository : IRepository<Receptionist>
 {
-    Task<IEnumerable<Receptionist>> SearchByNameAsync(string name);
+    Task<List<Receptionist>> SearchByNameAsync(string name);
 }
