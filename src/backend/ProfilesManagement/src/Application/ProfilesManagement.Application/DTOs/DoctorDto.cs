@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ProfilesManagement.Application.DTOs;
 
-namespace ProfilesManagement.Application.DTOs
+class DoctorDto
 {
-    class DoctorDto
-    {
-    }
 }

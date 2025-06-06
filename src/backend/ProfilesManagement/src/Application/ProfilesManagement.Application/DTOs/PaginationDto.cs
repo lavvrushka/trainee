@@ -1,4 +1,5 @@
-﻿using ProfilesManagement.Domain.Models;
+﻿using ProfilesManagement.Application.Common.Interfaces.IServices;
+using ProfilesManagement.Domain.Models;
 namespace ProfilesManagement.Application.DTOs;
 
 public class PaginationDto<T>
@@ -13,11 +14,6 @@ public class PageSettingsDto
 {
     public int PageIndex { get; set; }
     public int PageSize { get; set; }
-}
-public interface IPageableRequest
-{
-    int PageIndex { get; }
-    int PageSize { get; }
 }
 
 public static class PageSettingsMapper
