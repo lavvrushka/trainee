@@ -1,37 +1,38 @@
 ﻿using MyMediator.Interfaces;
 using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 using ProfilesManagement.Application.DTOs;
+using ProfilesManagement.Domain.Models;
 namespace ProfilesManagement.Application.UseCases.Patient;
 
-public record GetAllPatientsRequest(int PageNumber, int PageSize)
-       : IRequest<(List<PatientDto> Patients, int TotalCount)>;
+public record GetAllPatientsRequest(int PageIndex, int PageSize)
+       : IRequest<Pagination<PatientDto>>;
 
-public class GetAllPatientsHandler : IRequestHandler<GetAllPatientsRequest, (List<PatientDto> Patients, int TotalCount)>
-{
-    private readonly IPatientRepository _repository;
-
-    public GetAllPatientsHandler(IPatientRepository repository)
+    public class GetAllPatientsHandler
+       : IRequestHandler<GetAllPatientsRequest, Pagination<PatientDto>>
     {
-        _repository = repository;
-    }
+        private readonly IPatientRepository _repository;
 
-    public async Task<(List<PatientDto> Patients, int TotalCount)> Handle(GetAllPatientsRequest request, CancellationToken cancellationToken)
-    {
-        var allPatients = await _repository.GetAllAsync();
-
-        if (allPatients == null || !allPatients.Any())
+        public GetAllPatientsHandler(IPatientRepository repository)
         {
-            throw new Exception("No patients found.");
+            _repository = repository;
         }
 
-        var totalCount = allPatients.Count;
-        var paged = allPatients
-            .Skip((request.PageNumber - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .ToList();
+        public async Task<Pagination<PatientDto>> Handle(GetAllPatientsRequest request,CancellationToken cancellationToken)
+        {
+            var pageSettings = new PageSettings(request.PageIndex, request.PageSize);
 
-        var dtos = paged.Select(p => p.MapToPatientDto()).ToList();
+            var totalCount = await _repository.GetCountAsync();
+            if (totalCount == 0)
+                throw new Exception("No patients found.");
 
-        return (dtos, totalCount);
+            var patientsPage = await _repository.GetByPageAsync(request.PageIndex, request.PageSize);
+            if (patientsPage == null || !patientsPage.Any())
+                throw new Exception("No patients found for the given page.");
+
+            var dtoList = patientsPage
+                .Select(p => p.MapToPatientDto())
+                .ToList();
+
+            return new Pagination<PatientDto>(dtoList, totalCount, pageSettings);
+        }
     }
-}

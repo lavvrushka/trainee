@@ -11,5 +11,4 @@ public class Receptionist
     public Guid AccountId { get; set; }
     public Guid ? OfficeId { get; set; } = null;
     public Guid? ImageId { get; set; } = null;
-    public Image? Image { get; set; } = null;
 }

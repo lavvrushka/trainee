@@ -13,5 +13,4 @@ public class Doctor
     public DateTime CareerStartYear { get; set; }
     public EmploymentStatus Status { get; set; }
     public Guid? ImageId { get; set; } = null;
-    public Image? Image { get; set; } = null;
 }
