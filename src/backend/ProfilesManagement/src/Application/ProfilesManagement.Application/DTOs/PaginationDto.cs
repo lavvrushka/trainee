@@ -14,9 +14,23 @@ public class PageSettingsDto
     public int PageIndex { get; set; }
     public int PageSize { get; set; }
 }
+public interface IPageableRequest
+{
+    int PageIndex { get; }
+    int PageSize { get; }
+}
 
 public static class PageSettingsMapper
 {
+    public static PageSettings MapToPageSettings(this IPageableRequest request)
+    {
+        return new PageSettings
+        {
+            PageIndex = request.PageIndex,
+            PageSize = request.PageSize
+        };
+    }
+
     public static PageSettingsDto MapToPageSettingsDto(this PageSettings settings)
     {
         return new PageSettingsDto

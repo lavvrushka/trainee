@@ -1,4 +1,6 @@
-﻿namespace ProfilesManagement.Application.DTOs;
+﻿using ProfilesManagement.Domain.Models;
+
+namespace ProfilesManagement.Application.DTOs;
 public class PatientDto
 {
     public Guid Id { get; set; }

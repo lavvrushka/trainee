@@ -10,4 +10,8 @@
     <PackageReference Include="MyMediator" Version="1.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProfilesManagement.Domain\ProfilesManagement.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
