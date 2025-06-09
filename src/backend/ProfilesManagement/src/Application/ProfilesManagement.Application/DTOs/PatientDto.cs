@@ -1,4 +1,5 @@
-﻿using ProfilesManagement.Domain.Models;
+﻿using ProfilesManagement.Application.UseCases.Patient;
+using ProfilesManagement.Domain.Models;
 
 namespace ProfilesManagement.Application.DTOs;
 public class PatientDto
@@ -24,5 +25,24 @@ public static class PatientMapper
             AccountId = patient.AccountId,
             ImageId = patient.ImageId
         };
+    }
+    public static Patient MapToPatient(this CreatePatientRequest request)
+    {
+        return new Patient
+        {
+            Id = Guid.NewGuid(),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            MiddleName = request.MiddleName,
+            AccountId = request.AccountId,
+            ImageId = request.ImageId
+        };
+    }
+    public static void MapToPatient(this UpdatePatientRequest request, Patient patient)
+    {
+        patient.FirstName = request.FirstName;
+        patient.LastName = request.LastName;
+        patient.MiddleName = request.MiddleName;
+        patient.ImageId = request.ImageId;
     }
 }

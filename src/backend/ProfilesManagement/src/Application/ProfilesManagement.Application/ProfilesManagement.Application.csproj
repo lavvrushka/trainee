@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ProfilesManagement.Domain\ProfilesManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Interfaces\IServices\" />
+  </ItemGroup>
+
 </Project>

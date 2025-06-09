@@ -1,63 +1,31 @@
-﻿using ProfilesManagement.Application.Common.Interfaces.IServices;
-using ProfilesManagement.Domain.Models;
-namespace ProfilesManagement.Application.DTOs;
+﻿// файл: Application/DTOs/PaginationMapper.cs
+using System.Linq;
+using ProfilesManagement.Domain.Models;      // Pagination<T>, PageSettings, Patient
+using ProfilesManagement.Application.DTOs;  // PatientDto, PatientMapper
 
-public class PaginationDto<T>
+namespace ProfilesManagement.Application.DTOs
 {
-    public int CurrentPage { get; set; }
-    public int TotalPages { get; set; }
-    public int PageSize { get; set; }
-    public int TotalCount { get; set; }
-    public List<T> Items { get; set; } = new();
-}
-public class PageSettingsDto
-{
-    public int PageIndex { get; set; }
-    public int PageSize { get; set; }
-}
-
-public static class PageSettingsMapper
-{
-    public static PageSettings MapToPageSettings(this IPageableRequest request)
+    public static class PaginationMapper
     {
-        return new PageSettings
+        // Это расширение привязано строго к Pagination<Domain.Models.Patient>
+        public static Pagination<PatientDto> MapToPatientDtoPage(
+            this Pagination<Patient> sourcePage)
         {
-            PageIndex = request.PageIndex,
-            PageSize = request.PageSize
-        };
-    }
+            var dtoItems = sourcePage.Items
+                                     .Select(p => p.MapToPatientDto())
+                                     .ToList();
 
-    public static PageSettingsDto MapToPageSettingsDto(this PageSettings settings)
-    {
-        return new PageSettingsDto
-        {
-            PageIndex = settings.PageIndex,
-            PageSize = settings.PageSize
-        };
-    }
-}
+            var pageSettings = new PageSettings
+            {
+                PageIndex = sourcePage.CurrentPage,
+                PageSize = sourcePage.PageSize
+            };
 
-public static class PaginationMapper
-{
-    public static PaginationDto<TDto> MapToDto<TSource, TDto>(this Pagination<TSource> pagination, Func<TSource, TDto> mapItem)
-    {
-        if (pagination == null)
-        {
-            throw new ArgumentNullException(nameof(pagination));
+            return new Pagination<PatientDto>(
+                items: dtoItems,
+                count: sourcePage.TotalCount,
+                pageSettings: pageSettings
+            );
         }
-
-        if (mapItem == null)
-        {
-            throw new ArgumentNullException(nameof(mapItem));
-        }
-
-        return new PaginationDto<TDto>
-        {
-            CurrentPage = pagination.CurrentPage,
-            TotalPages = pagination.TotalPages,
-            PageSize = pagination.PageSize,
-            TotalCount = pagination.TotalCount,
-            Items = pagination.Items.Select(mapItem).ToList()
-        };
     }
 }
