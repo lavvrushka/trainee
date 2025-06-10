@@ -1,5 +1,4 @@
-﻿using ProfilesManagement.Domain.Enums;
-namespace ProfilesManagement.Domain.Models;
+﻿namespace ProfilesManagement.Domain.Models;
 
 public class Doctor
 {

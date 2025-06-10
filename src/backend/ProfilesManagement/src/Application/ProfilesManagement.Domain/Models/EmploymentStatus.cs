@@ -1,4 +1,4 @@
-﻿namespace ProfilesManagement.Domain.Enums;
+﻿namespace ProfilesManagement.Domain.Models;
 
 public class EmploymentStatus
 {

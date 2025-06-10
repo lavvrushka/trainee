@@ -1,4 +1,4 @@
-﻿using ProfilesManagement.Application.UseCases.Patient;
+﻿using ProfilesManagement.Application.UseCases.PatientUseCases;
 using ProfilesManagement.Domain.Models;
 
 namespace ProfilesManagement.Application.DTOs;

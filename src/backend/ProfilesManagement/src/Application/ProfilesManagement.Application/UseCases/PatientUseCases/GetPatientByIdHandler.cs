@@ -1,7 +1,7 @@
 ﻿using MyMediator.Interfaces;
 using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 using ProfilesManagement.Application.DTOs;
-namespace ProfilesManagement.Application.UseCases.Patient;
+namespace ProfilesManagement.Application.UseCases.PatientUseCases;
 
 public record GetPatientByIdRequest(Guid Id) : IRequest<PatientDto>;
 

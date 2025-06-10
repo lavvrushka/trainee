@@ -1,6 +1,6 @@
 ﻿using MyMediator.Interfaces;
 using ProfilesManagement.Application.Common.Interfaces.IRepositories;
-namespace ProfilesManagement.Application.UseCases.Patient;
+namespace ProfilesManagement.Application.UseCases.PatientUseCases;
 
 public record DeletePatientRequest(Guid Id) : IRequest<Unit>;
 
