@@ -29,6 +29,7 @@ public class UpdatePatientHandler : IRequestHandler<UpdatePatientRequest, Unit>
         {
             throw new KeyNotFoundException($"Patient {request.Id} not found");
         }
+
         request.MapToPatient(patient);
 
         // ToDo: обновить сервис файлов или чета такое, если поменялась картинка (request.ImageId)
