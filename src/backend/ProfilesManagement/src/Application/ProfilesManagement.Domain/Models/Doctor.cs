@@ -1,5 +1,4 @@
-﻿using ProfilesManagement.Domain.Enums;
-namespace ProfilesManagement.Domain.Models;
+﻿namespace ProfilesManagement.Domain.Models;
 
 public class Doctor
 {
@@ -13,5 +12,4 @@ public class Doctor
     public DateTime CareerStartYear { get; set; }
     public EmploymentStatus Status { get; set; }
     public Guid? ImageId { get; set; } = null;
-    public Image? Image { get; set; } = null;
 }
