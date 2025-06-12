@@ -1,5 +1,4 @@
-﻿using ProfilesManagement.Domain.Enums;
-namespace ProfilesManagement.Domain.Models;
+﻿namespace ProfilesManagement.Domain.Models;
 
 public class Receptionist
 {
@@ -11,5 +10,4 @@ public class Receptionist
     public Guid AccountId { get; set; }
     public Guid ? OfficeId { get; set; } = null;
     public Guid? ImageId { get; set; } = null;
-    public Image? Image { get; set; } = null;
 }

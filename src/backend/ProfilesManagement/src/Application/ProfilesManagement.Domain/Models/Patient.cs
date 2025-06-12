@@ -8,5 +8,4 @@ public class Patient
     public string MiddleName { get; set; }
     public Guid AccountId { get; set; }
     public Guid? ImageId { get; set; } = null;
-    public Image? Image { get; set; } = null;
 }
