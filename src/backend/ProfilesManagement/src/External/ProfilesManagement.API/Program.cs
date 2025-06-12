@@ -1,11 +1,13 @@
-﻿using ProfilesManagement.API.Middlewares;
+﻿using Microsoft.OpenApi.Models;
+using ProfilesManagement.API.Extensions;
+using ProfilesManagement.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddValidationServices();
@@ -21,7 +23,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Ââåäèòå âàø Bearer òîêåí. Ïðèìåð: 'Bearer abcdef12345'"
+        Description = "'Bearer abcdef12345'"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -40,19 +42,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReact", policy =>
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials());
-});
 
 var app = builder.Build();
-
-app.UseCors("AllowReact");
-app.UseCors("AllowProductService");
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
