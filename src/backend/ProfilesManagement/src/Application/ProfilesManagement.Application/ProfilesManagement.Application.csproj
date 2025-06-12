@@ -16,8 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Interfaces\IServices\" />
-    <Folder Include="Common\Validation\PatientValidators\" />
-    <Folder Include="Common\Validation\ReceptionistValidators\" />
   </ItemGroup>
 
 </Project>
