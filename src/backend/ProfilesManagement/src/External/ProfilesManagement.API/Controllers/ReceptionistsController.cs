@@ -1,72 +1,44 @@
-﻿namespace ProfilesManagement.API.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyMediator.Interfaces;
+using ProfilesManagement.API.Filters;
+using ProfilesManagement.Application.DTOs;
+using ProfilesManagement.Application.UseCases.ReceptionistUseCases;
+using ProfilesManagement.Domain.Models;
+namespace ProfilesManagement.API.Controllers;
+
+[ApiController]
+[Route("api/receptionist")]
+[Authorize]
+public class ReceptionistController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PatientsController : ControllerBase
+    private readonly IMediator _mediator;
+    public ReceptionistController(IMediator mediator) => _mediator = mediator;
+
+    [HttpPost("create")]
+    [ValidateModel]
+    public async Task<IActionResult> Create([FromBody] CreateReceptionistRequest request)
     {
-        private readonly IRequestHandler<CreatePatientRequest, Guid> _createHandler;
-        private readonly IRequestHandler<UpdatePatientRequest, Unit> _updateHandler;
+        var id = await _mediator.Send(request);
 
-        public PatientsController(
-            IRequestHandler<CreatePatientRequest, Guid> createHandler,
-            IRequestHandler<UpdatePatientRequest, Unit> updateHandler)
-        {
-            _createHandler = createHandler;
-            _updateHandler = updateHandler;
-        }
-
-        // POST: api/patients
-        [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreatePatientRequest request)
-        {
-            var id = await _createHandler.Handle(request, HttpContext.RequestAborted);
-            return CreatedAtAction(null, id);
-        }
-
-        // PUT: api/patients/{id}
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePatientRequest request)
-        {
-            if (id != request.Id)
-                return BadRequest("Route id and body id do not match.");
-
-            await _updateHandler.Handle(request, HttpContext.RequestAborted);
-            return NoContent();
-        }
+        return Ok(id);
     }
 
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ReceptionistsController : ControllerBase
+    [HttpPut("update")]
+    [ValidateModel]
+    public async Task<IActionResult> Update([FromBody] UpdateReceptionistRequest request)
     {
-        private readonly IRequestHandler<CreateReceptionistRequest, Guid> _createHandler;
-        private readonly IRequestHandler<UpdateReceptionistRequest, Unit> _updateHandler;
+        await _mediator.Send(request);
 
-        public ReceptionistsController(
-            IRequestHandler<CreateReceptionistRequest, Guid> createHandler,
-            IRequestHandler<UpdateReceptionistRequest, Unit> updateHandler)
-        {
-            _createHandler = createHandler;
-            _updateHandler = updateHandler;
-        }
+        return Ok();
+    }
 
-        // POST: api/receptionists
-        [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateReceptionistRequest request)
-        {
-            var id = await _createHandler.Handle(request, HttpContext.RequestAborted);
-            return CreatedAtAction(null, id);
-        }
+    [HttpGet("page")]
+    public async Task<ActionResult<Pagination<ReceptionistDto>>> GetByPage(
+        [FromQuery] GetAllReceptionistsRequest request)
+    {
+        var page = await _mediator.Send(request);
 
-        // PUT: api/receptionists/{id}
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReceptionistRequest request)
-        {
-            if (id != request.Id)
-                return BadRequest("Route id and body id do not match.");
-
-            await _updateHandler.Handle(request, HttpContext.RequestAborted);
-            return NoContent();
-        }
+        return Ok(page);
     }
 }
