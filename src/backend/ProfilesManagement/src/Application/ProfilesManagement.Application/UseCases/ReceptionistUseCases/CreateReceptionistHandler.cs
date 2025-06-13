@@ -1,18 +1,17 @@
 ﻿using MyMediator.Interfaces;
 using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 using ProfilesManagement.Application.DTOs;
-using ProfilesManagement.Domain.Models;
 namespace ProfilesManagement.Application.UseCases.ReceptionistUseCases;
 
 public record CreateReceptionistRequest(
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        EmploymentStatus Status,
-        Guid AccountId,
-        Guid? OfficeId,
-        Guid? ImageId
-    ) : IRequest<Guid>;
+    string FirstName,
+    string LastName,
+    string MiddleName,
+    Guid StatusId,
+    Guid AccountId,
+    Guid OfficeId,
+    Guid? ImageId
+) : IRequest<Guid>;
 
 public class CreateReceptionistHandler: IRequestHandler<CreateReceptionistRequest, Guid>
 {

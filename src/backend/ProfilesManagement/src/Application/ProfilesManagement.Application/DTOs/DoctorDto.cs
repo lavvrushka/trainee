@@ -8,13 +8,20 @@ public class DoctorDto
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string MiddleName { get; set; } = null!;
+
     public Guid AccountId { get; set; }
-    public Guid? OfficeId { get; set; }
-    public Guid? SpecializationId { get; set; }
+    public Guid OfficeId { get; set; }
+    public Guid SpecializationId { get; set; }
+    public Specialization Specialization { get; set; } = null!;
+
     public DateTime CareerStartYear { get; set; }
-    public EmploymentStatus Status { get; set; }
+
+    public Guid StatusId { get; set; }
+    public EmploymentStatus Status { get; set; } = null!;
+
     public Guid? ImageId { get; set; }
 }
+
 public static class DoctorMapper
 {
     public static DoctorDto MapToDoctorDto(this Doctor doctor)
@@ -28,11 +35,14 @@ public static class DoctorMapper
             AccountId = doctor.AccountId,
             OfficeId = doctor.OfficeId,
             SpecializationId = doctor.SpecializationId,
+            Specialization = doctor.Specialization,
             CareerStartYear = doctor.CareerStartYear,
+            StatusId = doctor.StatusId,
             Status = doctor.Status,
             ImageId = doctor.ImageId
         };
     }
+
     public static Doctor MapToDoctor(this CreateDoctorRequest request)
     {
         return new Doctor
@@ -45,10 +55,11 @@ public static class DoctorMapper
             OfficeId = request.OfficeId,
             SpecializationId = request.SpecializationId,
             CareerStartYear = request.CareerStartYear,
-            Status = request.Status,
+            StatusId = request.StatusId,
             ImageId = request.ImageId
         };
     }
+
     public static void MapToDoctor(this UpdateDoctorRequest request, Doctor doctor)
     {
         doctor.FirstName = request.FirstName;
@@ -58,7 +69,7 @@ public static class DoctorMapper
         doctor.OfficeId = request.OfficeId;
         doctor.SpecializationId = request.SpecializationId;
         doctor.CareerStartYear = request.CareerStartYear;
-        doctor.Status = request.Status;
+        doctor.StatusId = request.StatusId;
         doctor.ImageId = request.ImageId;
     }
 }

@@ -23,17 +23,21 @@ public class UpdateReceptionistRequestValidator : AbstractValidator<UpdateRecept
         RuleFor(x => x.AccountId)
             .NotEmpty().WithMessage("Account Id is required.");
 
-        RuleFor(x => x.Status)
-            .NotNull().WithMessage("Employment status is required.")
-            .DependentRules(() =>
-            {
-                RuleFor(x => x.Status.Status)
-                    .NotEmpty().WithMessage("Status field within EmploymentStatus is required.")
-                    .MaximumLength(100).WithMessage("Status field must not exceed 100 characters.");
-            });
+        RuleFor(x => x.StatusId)
+            .NotEmpty().WithMessage("Employment status Id is required.")
+            .Must(id => id != Guid.Empty)
+            .WithMessage("Employment status Id must be a non-empty GUID.");
 
-        RuleFor(x => x.OfficeId)
-            .Must(id => id == null || id != Guid.Empty)
-            .WithMessage("If provided, Office Id must be a valid identifier.");
+
+        RuleFor(r => r.OfficeId)
+               .Cascade(CascadeMode.Stop)
+               .NotEmpty().WithMessage("SpecializationId is required.")
+               .Must(id => id != Guid.Empty).WithMessage("SpecializationId must be a non-empty GUID.");
+
+        RuleFor(r => r.ImageId)
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage("ImageId is required.")
+            .Must(id => id != Guid.Empty).WithMessage("ImageId must be a non-empty GUID.");
     }
+
 }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System.Net;
 using System.Text.Json;
 namespace ProfilesManagement.API.Middlewares;
 

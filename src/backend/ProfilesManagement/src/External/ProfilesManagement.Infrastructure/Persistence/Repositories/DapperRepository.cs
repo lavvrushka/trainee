@@ -1,4 +1,6 @@
 ﻿using System.Data;
+using Dapper;
+using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 using ProfilesManagement.Infrastructure.Persistence.Factories;
 namespace ProfilesManagement.Infrastructure.Persistence.Repositories;
 
@@ -30,5 +32,5 @@ public abstract class DapperRepository<T> : IRepository<T> where T : class
     public abstract Task UpdateAsync(T entity);
 
     public abstract Task DeleteAsync(T entity);
-
+    public abstract Task<int> GetCountAsync();
 }

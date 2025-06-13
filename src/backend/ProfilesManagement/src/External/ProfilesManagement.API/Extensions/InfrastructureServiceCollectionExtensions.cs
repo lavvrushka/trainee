@@ -1,20 +1,42 @@
-﻿namespace ProfilesManagement.API.Extensions;
+﻿using FluentMigrator.Runner;
+using Microsoft.Extensions.DependencyInjection;
+using ProfilesManagement.Application.Common.Interfaces.IRepositories;
+using ProfilesManagement.Infrastructure.Persistence.Factories;
+using ProfilesManagement.Infrastructure.Persistence.Migrations;
+using ProfilesManagement.Infrastructure.Persistence.Repositories;
+using System.Data;
+
+namespace ProfilesManagement.API.Extensions;
 
 public static class InfrastructureServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.Configure<DatabaseOptions>(configuration.GetSection("ConnectionStrings"));
+        services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        services.AddScoped<IDoctorRepository, DoctorDapperRepository>();
+        services.AddScoped<IPatientRepository, PatientDapperRepository>();
+        services.AddScoped<IReceptionistRepository, ReceptionistDapperRepository>();
+        services.AddScoped<IEmploymentStatusRepository, EmploymentStatusDapperRepository>();
 
-        services.AddDbContext<UserManagementDbContext>((serviceProvider, options) =>
-        {
-            var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-            options.UseNpgsql(dbOptions.DefaultConnection);
-        });
-
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-       
+        services.AddFluentMigratorCore()
+                 .ConfigureRunner(rb => rb
+                     .AddPostgres()
+                     .WithGlobalConnectionString(
+                         configuration.GetConnectionString("DefaultConnection"))
+                     .ScanIn(typeof(InitialTables).Assembly).For.Migrations()
+                 )
+                 .AddLogging(lb => lb.AddFluentMigratorConsole());
 
         return services;
+    }
+    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+        runner.MigrateUp();
+
+        return app;
     }
 }

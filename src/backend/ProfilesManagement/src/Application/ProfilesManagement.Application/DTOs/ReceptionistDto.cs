@@ -8,12 +8,14 @@ public class ReceptionistDto
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string MiddleName { get; set; } = null!;
-    public EmploymentStatus Status { get; set; }
+
+    public Guid StatusId { get; set; }
+    public EmploymentStatus Status { get; set; } = null!;
+
     public Guid AccountId { get; set; }
-    public Guid? OfficeId { get; set; }
+    public Guid OfficeId { get; set; }
     public Guid? ImageId { get; set; }
 }
-
 
 public static class ReceptionistMapper
 {
@@ -25,6 +27,7 @@ public static class ReceptionistMapper
             FirstName = receptionist.FirstName,
             LastName = receptionist.LastName,
             MiddleName = receptionist.MiddleName,
+            StatusId = receptionist.StatusId,
             Status = receptionist.Status,
             AccountId = receptionist.AccountId,
             OfficeId = receptionist.OfficeId,
@@ -40,7 +43,7 @@ public static class ReceptionistMapper
             FirstName = request.FirstName,
             LastName = request.LastName,
             MiddleName = request.MiddleName,
-            Status = request.Status,
+            StatusId = request.StatusId,
             AccountId = request.AccountId,
             OfficeId = request.OfficeId,
             ImageId = request.ImageId
@@ -52,7 +55,7 @@ public static class ReceptionistMapper
         receptionist.FirstName = request.FirstName;
         receptionist.LastName = request.LastName;
         receptionist.MiddleName = request.MiddleName;
-        receptionist.Status = request.Status;
+        receptionist.StatusId = request.StatusId;
         receptionist.AccountId = request.AccountId;
         receptionist.OfficeId = request.OfficeId;
         receptionist.ImageId = request.ImageId;

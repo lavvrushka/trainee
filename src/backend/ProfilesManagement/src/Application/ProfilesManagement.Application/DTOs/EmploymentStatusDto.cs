@@ -1,5 +1,4 @@
 ﻿using ProfilesManagement.Application.UseCases.EmploymentStatusUseCases;
-using ProfilesManagement.Application.UseCases.PatientUseCases;
 using ProfilesManagement.Domain.Models;
 
 namespace ProfilesManagement.Application.DTOs;

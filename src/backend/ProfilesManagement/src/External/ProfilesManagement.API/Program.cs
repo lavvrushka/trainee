@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddJwtAuthentication(builder.Configuration);
+
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddValidationServices();
@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "'Bearer abcdef12345'"
+        Description = "Ââåäèòå âàø Bearer òîêåí. Ïðèìåð: 'Bearer abcdef12345'"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -45,6 +45,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseMigrations();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 

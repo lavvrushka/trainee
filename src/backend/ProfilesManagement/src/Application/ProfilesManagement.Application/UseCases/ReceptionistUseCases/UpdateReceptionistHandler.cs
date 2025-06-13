@@ -5,15 +5,15 @@ using ProfilesManagement.Domain.Models;
 namespace ProfilesManagement.Application.UseCases.ReceptionistUseCases;
 
 public record UpdateReceptionistRequest(
-     Guid Id,
-     string FirstName,
-     string LastName,
-     string MiddleName,
-     EmploymentStatus Status,
-     Guid AccountId,
-     Guid? OfficeId,
-     Guid? ImageId
- ) : IRequest<Unit>;
+    Guid Id,
+    string FirstName,
+    string LastName,
+    string MiddleName,
+    Guid StatusId,
+    Guid AccountId,
+    Guid OfficeId,
+    Guid? ImageId
+) : IRequest<Unit>;
 
 public class UpdateReceptionistHandler: IRequestHandler<UpdateReceptionistRequest, Unit>
 {

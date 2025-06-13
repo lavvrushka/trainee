@@ -5,16 +5,16 @@ using ProfilesManagement.Domain.Models;
 namespace ProfilesManagement.Application.UseCases.DoctorUseCases;
 
 public record CreateDoctorRequest(
-      string FirstName,
-      string LastName,
-      string MiddleName,
-      Guid AccountId,
-      Guid? OfficeId,
-      Guid? SpecializationId,
-      DateTime CareerStartYear,
-      EmploymentStatus Status,
-      Guid? ImageId
-  ) : IRequest<Guid>;
+    string FirstName,
+    string LastName,
+    string MiddleName,
+    Guid AccountId,
+    Guid OfficeId,
+    Guid SpecializationId,
+    DateTime CareerStartYear,
+    Guid StatusId,
+    Guid? ImageId
+) : IRequest<Guid>;
 
 public class CreateDoctorHandler: IRequestHandler<CreateDoctorRequest, Guid>
 {

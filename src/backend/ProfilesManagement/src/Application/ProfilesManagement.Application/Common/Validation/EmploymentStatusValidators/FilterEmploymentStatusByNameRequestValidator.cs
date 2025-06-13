@@ -2,9 +2,9 @@
 using ProfilesManagement.Application.UseCases.EmploymentStatusUseCases;
 namespace ProfilesManagement.Application.Common.Validation.EmploymentStatusValidators;
 
-public class FilterEmploymentStatusByNameQueryValidator : AbstractValidator<FilterEmploymentStatusByNameRequest>
+public class FilterEmploymentStatusByNameRequestValidator : AbstractValidator<FilterEmploymentStatusByNameRequest>
 {
-    public FilterEmploymentStatusByNameQueryValidator()
+    public FilterEmploymentStatusByNameRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()
