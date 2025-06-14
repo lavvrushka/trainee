@@ -19,6 +19,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IPatientRepository, PatientDapperRepository>();
         services.AddScoped<IReceptionistRepository, ReceptionistDapperRepository>();
         services.AddScoped<IEmploymentStatusRepository, EmploymentStatusDapperRepository>();
+        services.AddScoped<ISpecializationRepository, SpecializationDapperRepository>();
 
         services.AddFluentMigratorCore()
                  .ConfigureRunner(rb => rb

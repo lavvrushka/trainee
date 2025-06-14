@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using ProfilesManagement.Application.Common.Interfaces.IRepositories;
 using ProfilesManagement.Domain.Models;
 using ProfilesManagement.Infrastructure.Persistence.Factories;

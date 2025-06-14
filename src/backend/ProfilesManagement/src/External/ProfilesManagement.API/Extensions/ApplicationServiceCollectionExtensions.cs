@@ -5,6 +5,7 @@ using ProfilesManagement.Application.UseCases.DoctorUseCases;
 using ProfilesManagement.Application.UseCases.EmploymentStatusUseCases;
 using ProfilesManagement.Application.UseCases.PatientUseCases;
 using ProfilesManagement.Application.UseCases.ReceptionistUseCases;
+using ProfilesManagement.Application.UseCases.SpecializationUseCases;
 namespace ProfilesManagement.API.Extensions;
 
 public static class ApplicationCollectionExtensions
@@ -42,6 +43,13 @@ public static class ApplicationCollectionExtensions
         services.AddScoped<GetEmploymentStatusByIdHandler>();
         services.AddScoped<FilterEmploymentStatusByNameHandler>();
         services.AddScoped<DeleteEmploymentStatusHandler>();
+
+        services.AddScoped<CreateSpecializationHandler>();
+        services.AddScoped<UpdateSpecializationHandler>();
+        services.AddScoped<GetAllSpecializationsHandler>();
+        services.AddScoped<GetSpecializationByIdHandler>();
+        services.AddScoped<FilterSpecializationsByNameHandler>();
+        services.AddScoped<DeleteSpecializationHandler>();
 
         return services;
     }

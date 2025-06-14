@@ -3,6 +3,7 @@ using ProfilesManagement.Application.Common.Validation.DoctorValidators;
 using ProfilesManagement.Application.Common.Validation.EmploymentStatusValidators;
 using ProfilesManagement.Application.Common.Validation.PatientValidators;
 using ProfilesManagement.Application.Common.Validation.ReceptionistValidators;
+using ProfilesManagement.Application.Common.Validation.SpecializationValidators;
 namespace ProfilesManagement.API.Extensions;
 
 public static class ValidationServiceCollectionExtensions
@@ -23,6 +24,10 @@ public static class ValidationServiceCollectionExtensions
         services.AddValidatorsFromAssemblyContaining<EmploymentStatusRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<FilterEmploymentStatusByNameRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateEmploymentStatusRequestValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<CreateSpecializationRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateSpecializationRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<FilterSpecializationsByNameRequestValidator>();
 
         return services;
     }

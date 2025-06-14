@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Ââåäèòå âàø Bearer òîêåí. Ïðèìåð: 'Bearer abcdef12345'"
+        Description = ": 'Bearer abcdef12345'"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
