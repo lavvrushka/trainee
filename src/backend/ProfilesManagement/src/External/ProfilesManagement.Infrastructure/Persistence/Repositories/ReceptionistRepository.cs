@@ -75,17 +75,20 @@ WHERE ""Id"" = @Id";
         return await db.ExecuteScalarAsync<int>(sql);
     }
 
-    public async Task<List<Receptionist>> SearchByNameAsync(string name)
+    public async Task<List<Receptionist>> FilterByNameAsync(string name)
     {
         const string sql = @"
 SELECT *
 FROM ""Receptionists""
-WHERE ""FirstName"" ILIKE @p OR ""LastName"" ILIKE @p";
-        using var db = Connection;
-        var list = await db.QueryAsync<Receptionist>(sql, new { p = $"%{name}%" });
-        return list.AsList();
-    }
+WHERE ""FirstName""  ILIKE @pattern
+   OR ""LastName""   ILIKE @pattern
+   OR ""MiddleName"" ILIKE @pattern";
 
+        using var db = Connection;
+        return (await db
+            .QueryAsync<Receptionist>(sql, new { pattern = $"%{name}%" }))
+            .AsList();
+    }
     public async Task<List<Receptionist>> GetByPageAsync(PageSettings pageSettings)
     {
         const string sql = @"

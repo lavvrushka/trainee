@@ -11,7 +11,6 @@ public static class ValidationServiceCollectionExtensions
     public static IServiceCollection AddValidationServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<CreateDoctorRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<GetAllDoctorsRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateDoctorRequestValidator>();
 
         services.AddValidatorsFromAssemblyContaining<CreatePatientRequestValidator>();
@@ -21,7 +20,6 @@ public static class ValidationServiceCollectionExtensions
         services.AddValidatorsFromAssemblyContaining<UpdateReceptionistRequestValidator>();
 
         services.AddValidatorsFromAssemblyContaining<CreateEmploymentStatusRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<EmploymentStatusRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<FilterEmploymentStatusByNameRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateEmploymentStatusRequestValidator>();
 

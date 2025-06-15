@@ -22,20 +22,23 @@ public static class ApplicationCollectionExtensions
         services.AddScoped<GetAllPatientsHandler>();
         services.AddScoped<GetPatientByIdHandler>();
         services.AddScoped<DeletePatientHandler>();
+        services.AddScoped<FilterPatientsByNameHandler>();
 
         services.AddScoped<CreateDoctorHandler>();
         services.AddScoped<UpdateDoctorHandler>();
         services.AddScoped<GetAllDoctorsHandler>();
         services.AddScoped<GetDoctorByIdHandler>();
-        //services.AddScoped<FilterDoctorsByNameHandler>();
         services.AddScoped<DeleteDoctorHandler>();
+        services.AddScoped<FilterDoctorsByNameHandler>();
+        services.AddScoped<FilterDoctorsBySpecializationHandler>();
+        services.AddScoped<FilterDoctorsByOfficeHandler>();
 
         services.AddScoped<CreateReceptionistHandler>();
         services.AddScoped<UpdateReceptionistHandler>();
         services.AddScoped<GetAllReceptionistsHandler>();
         services.AddScoped<GetReceptionistByIdHandler>();
-        //services.AddScoped<FilterReceptionistsByNameHandler>();
         services.AddScoped<DeleteReceptionistHandler>();
+        services.AddScoped<FilterReceptionistsByNameHandler>();
 
         services.AddScoped<CreateEmploymentStatusHandler>();
         services.AddScoped<UpdateEmploymentStatusHandler>();

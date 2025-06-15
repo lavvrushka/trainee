@@ -5,6 +5,8 @@ using ProfilesManagement.API.Filters;
 using ProfilesManagement.Application.DTOs;
 using ProfilesManagement.Application.UseCases.PatientUseCases;
 using ProfilesManagement.Domain.Models;
+using System.Collections.Generic;
+using System.Xml.Linq;
 namespace ProfilesManagement.API.Controllers;
 
 [ApiController]
@@ -42,6 +44,14 @@ public class PatientController : ControllerBase
         var dto = await _mediator.Send(new GetPatientByIdRequest(id));
 
         return Ok(dto);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<PatientDto>>> Search([FromQuery] string name)
+    {
+       var list = await _mediator.Send(new FilterPatientsByNameRequest(name));
+
+       return Ok(list);
     }
 
     [HttpPut("update")]

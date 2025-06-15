@@ -143,10 +143,13 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         const string sql = @"
 SELECT *
 FROM ""Doctors""
-WHERE ""FirstName"" ILIKE @p OR ""LastName"" ILIKE @p";
+WHERE ""FirstName""  ILIKE @p
+   OR ""LastName""   ILIKE @p
+   OR ""MiddleName"" ILIKE @p";
 
         using var db = Connection;
-        return (await db.QueryAsync<Doctor>(sql, new { p = $"%{name}%" })).AsList();
+        return (await db.QueryAsync<Doctor>(sql, new { p = $"%{name}%" }))
+               .AsList();
     }
 
     public async Task<List<Doctor>> FilterBySpecializationAsync(Guid specializationId)

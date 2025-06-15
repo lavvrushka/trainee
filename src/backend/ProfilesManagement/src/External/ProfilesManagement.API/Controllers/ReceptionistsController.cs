@@ -5,6 +5,7 @@ using ProfilesManagement.API.Filters;
 using ProfilesManagement.Application.DTOs;
 using ProfilesManagement.Application.UseCases.ReceptionistUseCases;
 using ProfilesManagement.Domain.Models;
+
 namespace ProfilesManagement.API.Controllers;
 
 [ApiController]
@@ -17,7 +18,7 @@ public class ReceptionistController : ControllerBase
 
     [HttpPost("create")]
     [ValidateModel]
-    public async Task<IActionResult> Create([FromBody] CreateReceptionistRequest request)
+    public async Task<ActionResult<Guid>> Create([FromBody] CreateReceptionistRequest request)
     {
         var id = await _mediator.Send(request);
 
@@ -38,7 +39,32 @@ public class ReceptionistController : ControllerBase
         [FromQuery] GetAllReceptionistsRequest request)
     {
         var page = await _mediator.Send(request);
-
+        
         return Ok(page);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ReceptionistDto>> GetById(Guid id)
+    {
+        var dto = await _mediator.Send(new GetReceptionistByIdRequest(id));
+
+        return Ok(dto);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<ReceptionistDto>>> Search(
+        [FromQuery] FilterReceptionistsByNameRequest request)
+    {
+        var list = await _mediator.Send(request);
+
+        return Ok(list);
+    }
+
+    [HttpDelete("delete/{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.Send(new DeleteReceptionistRequest(id));
+
+        return NoContent();
     }
 }

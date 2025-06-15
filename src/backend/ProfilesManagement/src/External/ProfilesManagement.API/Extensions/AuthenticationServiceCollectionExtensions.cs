@@ -34,7 +34,7 @@ namespace ProfilesManagement.API.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("User", policy => policy.RequireRole("User"));
+                options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor"));
             });
 
             return services;

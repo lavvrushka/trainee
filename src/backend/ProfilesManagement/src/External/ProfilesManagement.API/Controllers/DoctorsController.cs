@@ -50,13 +50,29 @@ public class DoctorController : ControllerBase
         return Ok(dto);
     }
 
-    //[HttpGet("search")]
-    //public async Task<ActionResult<IEnumerable<DoctorDto>>> Search([FromQuery] string name)
-    //{
-    //    var list = await _mediator.Send(new FilterDoctorsByNameRequest(name));
+    [HttpGet("by-specialization/{specializationId:guid}")]
+    public async Task<ActionResult<IEnumerable<DoctorDto>>> GetBySpecialization(Guid specializationId)
+    {
+        var list = await _mediator.Send(new FilterDoctorsBySpecializationRequest(specializationId));
 
-    //    return Ok(list);
-    //}
+        return Ok(list);
+    }
+
+    [HttpGet("by-office/{officeId:guid}")]
+    public async Task<ActionResult<IEnumerable<DoctorDto>>> GetByOffice(Guid officeId)
+    {
+        var list = await _mediator.Send(new FilterDoctorsByOfficeRequest(officeId));
+
+        return Ok(list);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<DoctorDto>>> Search([FromQuery] string name)
+    {
+        var list = await _mediator.Send(new FilterDoctorsByNameRequest(name));
+
+        return Ok(list);
+    }
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
