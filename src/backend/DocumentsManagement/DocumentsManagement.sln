@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsAPI", "src\External\DocumentsApi\DocumentsAPI.csproj", "{F65B170D-D8FF-4CEA-88AC-7BD1BD029B2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsBusinessLogic", "src\Application\DocumentsBusinessLogic\DocumentsBusinessLogic.csproj", "{8D811730-FFBB-48EF-8D58-F7FFBD7DDD53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsDataAccess", "src\External\DocumentsDataAccess\DocumentsDataAccess.csproj", "{531DA611-E502-4CE1-95C1-A11337B66EDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs", "BackgroundJobs\BackgroundJobs.csproj", "{2A02E17E-A229-47F9-B886-4B2CD626ACAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{531DA611-E502-4CE1-95C1-A11337B66EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{531DA611-E502-4CE1-95C1-A11337B66EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{531DA611-E502-4CE1-95C1-A11337B66EDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A02E17E-A229-47F9-B886-4B2CD626ACAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A02E17E-A229-47F9-B886-4B2CD626ACAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A02E17E-A229-47F9-B886-4B2CD626ACAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A02E17E-A229-47F9-B886-4B2CD626ACAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
