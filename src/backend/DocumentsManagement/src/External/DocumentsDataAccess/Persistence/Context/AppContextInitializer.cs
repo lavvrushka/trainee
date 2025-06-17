@@ -9,6 +9,5 @@ public static class AppContextInitializer
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await context.Database.MigrateAsync();
-
     }
 }

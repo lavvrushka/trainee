@@ -13,4 +13,8 @@
     <Folder Include="Middlewares\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\DocumentsBusinessLogic\DocumentsBusinessLogic.csproj" />
+  </ItemGroup>
+
 </Project>

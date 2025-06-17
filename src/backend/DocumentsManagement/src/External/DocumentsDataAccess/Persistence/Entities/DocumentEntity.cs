@@ -1,6 +1,7 @@
-﻿namespace DocumentsDataAccess.Persistence.Entities;
+﻿using DocumentsDataAccess.Persistence.Interfaces.Auxiliary;
+namespace DocumentsDataAccess.Persistence.Entities;
 
-public class DocumentEntity
+public class DocumentEntity : ITrackable
 {
     public Guid Id { get; set; }
     public string BlobUrl { get; set; } = null!;
