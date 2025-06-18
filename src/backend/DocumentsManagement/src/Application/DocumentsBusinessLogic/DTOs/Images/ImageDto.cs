@@ -1,4 +1,5 @@
-﻿using DocumentsDataAccess.Persistence.Entities;
+﻿using DocumentsBusinessLogic.UseCases.ImagesUseCases;
+using DocumentsDataAccess.Persistence.Entities;
 namespace DocumentsBusinessLogic.DTOs.Images;
 
 public class ImageDto
@@ -24,12 +25,12 @@ public static class ImageMapper
         return dto;
     }
 
-    public static ImageEntity ToEntity(this CreateImageRequest createImageRequest)
+    public static ImageEntity ToEntity(this CreateImageRequest createImageRequest, string blobUri)
     {
         var entity = new ImageEntity
         {
             Id = Guid.NewGuid(),
-            BlobUrl = createImageRequest.BlobUrl,
+            BlobUrl = blobUri,
             LastRetrievedAt = DateTime.UtcNow,
             IsDeleted = false
         };
@@ -37,8 +38,9 @@ public static class ImageMapper
         return entity;
     }
 
-    public static void ApplyUpdate(this UpdateImageRequest updateImageRequest, ImageEntity imageEntity)
+    public static void ApplyUpdate(this UpdateImageRequest updateImageRequest, ImageEntity imageEntity, string blobUri)
     {
-        imageEntity.BlobUrl = updateImageRequest.BlobUrl;
+        imageEntity.BlobUrl = blobUri;
     }
+
 }

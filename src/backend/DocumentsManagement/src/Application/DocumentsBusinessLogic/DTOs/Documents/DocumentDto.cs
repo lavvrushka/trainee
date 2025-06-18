@@ -1,4 +1,6 @@
-﻿using DocumentsDataAccess.Persistence.Entities;
+﻿using Azure.Storage.Blobs.Models;
+using DocumentsBusinessLogic.UseCases.DocumentsUseCases;
+using DocumentsDataAccess.Persistence.Entities;
 namespace DocumentsBusinessLogic.DTOs.Documents;
 
 public class DocumentDto
@@ -23,12 +25,12 @@ public static class DocumentMapper
         return dto;
     }
 
-    public static DocumentEntity ToEntity(this CreateDocumentRequest createDocumentRequest)
+    public static DocumentEntity ToEntity(this CreateDocumentRequest createDocumentRequest, string blobUri)
     {
         var entity = new DocumentEntity
         {
             Id = Guid.NewGuid(),
-            BlobUrl = createDocumentRequest.BlobUrl,
+            BlobUrl = blobUri,
             LastRetrievedAt = DateTime.UtcNow,
             IsDeleted = false
         };
@@ -36,8 +38,13 @@ public static class DocumentMapper
         return entity;
     }
 
-    public static void ApplyUpdate(this UpdateDocumentRequest updateDocumentRequest, DocumentEntity documentEntity)
+    public static DownloadDocumentResponse ToDownloadResponse(this DocumentEntity entity, BlobDownloadStreamingResult blobResult)
     {
-        documentEntity.BlobUrl = updateDocumentRequest.BlobUrl;
+        return new DownloadDocumentResponse
+        {
+            Stream = blobResult.Content,
+            ContentType = blobResult.Details.ContentType ?? "application/octet-stream",
+            FileName = $"{entity.Id}.bin"
+        };
     }
 }

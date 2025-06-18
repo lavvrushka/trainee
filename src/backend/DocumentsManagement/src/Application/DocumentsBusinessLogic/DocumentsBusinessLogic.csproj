@@ -10,8 +10,7 @@
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Interfaces\IServices\" />
     <Folder Include="Common\Validation\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Services\" />
+    <Folder Include="UseCases\DocumentsUseCases\" />
   </ItemGroup>
 
   <ItemGroup>
