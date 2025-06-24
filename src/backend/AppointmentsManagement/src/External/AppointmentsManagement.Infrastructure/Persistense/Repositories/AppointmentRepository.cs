@@ -2,89 +2,66 @@
 using AppointmentsManagement.Domain.Models;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
 using Microsoft.EntityFrameworkCore;
+
 namespace AppointmentsManagement.Infrastructure.Persistense.Repositories;
 
-public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
+public class AppointmentRepository(AppointmentsManagementDbContext context)
+    : Repository<Appointment>(context), IAppointmentRepository
 {
-    public AppointmentRepository(AppointmentsManagementDbContext context)
-        : base(context)
+    public Task<List<Appointment>> GetByPatientAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
-    }
-
-    public async Task<List<Appointment>> GetAllAsync()
-    {
-        List<Appointment> list = await _dbSet
-            .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
-    }
-
-    public async Task<List<Appointment>> GetByPatientAsync(int patientId)
-    {
-        List<Appointment> list = await _dbSet
+        return context.Appointments
             .Where(a => a.PatientId == patientId)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date)
+    public Task<List<Appointment>> GetByDoctorAndDateAsync(Guid doctorId, DateTime date, CancellationToken cancellationToken = default)
     {
-        List<Appointment> list = await _dbSet
-            .Where(a => a.DoctorId == doctorId && a.Date.Date == date.Date)
+        var start = date.Date;
+        var end = start.AddDays(1);
+
+        return context.Appointments
+            .Where(a => a.DoctorId == doctorId && a.Date >= start && a.Date < end)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> ExistsByDoctorAndDateAsync(int doctorId, DateTime date)
+    public Task<bool> ExistsByDoctorAndDateAsync(Guid doctorId, DateTime date, CancellationToken cancellationToken = default)
     {
-        bool exists = await _dbSet
-            .AnyAsync(a => a.DoctorId == doctorId && a.Date == date);
-
-        return exists;
+        return context.Appointments
+            .AnyAsync(a => a.DoctorId == doctorId && a.Date == date, cancellationToken);
     }
 
-    public async Task<List<Appointment>> GetPendingByDoctorAsync(int doctorId)
+    public Task<List<Appointment>> GetPendingByDoctorAsync(Guid doctorId, CancellationToken cancellationToken = default)
     {
-        List<Appointment> list = await _dbSet
+        return context.Appointments
             .Where(a => a.DoctorId == doctorId && !a.IsApproved)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Appointment>> GetApprovedByPatientAsync(int patientId)
+    public Task<List<Appointment>> GetApprovedByPatientAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
-        List<Appointment> list = await _dbSet
+        return context.Appointments
             .Where(a => a.PatientId == patientId && a.IsApproved)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Appointment>> GetByServiceAsync(int serviceId)
+    public Task<List<Appointment>> GetByServiceAsync(Guid serviceId, CancellationToken cancellationToken = default)
     {
-        List<Appointment> list = await _dbSet
+        return context.Appointments
             .Where(a => a.ServiceId == serviceId)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Appointment>> GetUpcomingAsync(DateTime from, DateTime to)
+    public Task<List<Appointment>> GetUpcomingAsync(DateTime from, DateTime to, CancellationToken cancellationToken = default)
     {
-        List<Appointment> list = await _dbSet
+        return context.Appointments
             .Where(a => a.Date >= from && a.Date <= to)
             .Include(a => a.Result)
-            .ToListAsync();
-
-        return list;
+            .ToListAsync(cancellationToken);
     }
 }

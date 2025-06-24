@@ -1,14 +1,15 @@
 ﻿namespace AppointmentsManagement.Domain.Models;
 
-public class Appointment
+public class Appointment : IEntity
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public int PatientId { get; set; }
-    public int DoctorId { get; set; }
-    public int ServiceId { get; set; }
+    public Guid PatientId { get; set; }
+    public Guid DoctorId { get; set; }
+    public Guid ServiceId { get; set; }
 
-    public DateTime Date { get; set; }           
+    public DateTime Date { get; set; }
     public bool IsApproved { get; set; } = false;
-    public Result Result { get; set; }
+
+    public Result? Result { get; set; }
 }

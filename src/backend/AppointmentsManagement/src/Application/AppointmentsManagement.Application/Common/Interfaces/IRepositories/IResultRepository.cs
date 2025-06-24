@@ -3,7 +3,6 @@ namespace AppointmentsManagement.Application.Common.Interfaces.IRepositories;
 
 public interface IResultRepository : IRepository<Result>
 {
-    public Task<Result?> GetByAppointmentIdAsync(int appointmentId);
-    public Task<List<Result>> GetByDoctorAsync(int doctorId);
-    public Task<List<Result>> GetRecentAsync(int days);
+    public Task<Result?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken cancellationToken = default);
+    public Task<List<Result>> GetRecentAsync(int days, CancellationToken cancellationToken = default);
 }

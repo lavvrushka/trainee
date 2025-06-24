@@ -1,10 +1,12 @@
-﻿namespace AppointmentsManagement.Application.Common.Interfaces.IRepositories;
+﻿using AppointmentsManagement.Domain.Models;
+namespace AppointmentsManagement.Application.Common.Interfaces.IRepositories;
 
-public interface IRepository<T> where T : class
+public interface IRepository<T> where T : class, IEntity
 {
-    public Task<List<T>> GetAllAsync();
-    public Task<T?> GetByIdAsync(Guid id);
-    public Task AddAsync(T entity);
-    public Task UpdateAsync(T entity);
-    public Task DeleteAsync(T entity);
+    public Task<Pagination<T>> GetAllAsync(PageSettings pageSettings, CancellationToken cancellationToken = default);
+    public Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    public ValueTask AddAsync(T entity, CancellationToken cancellationToken = default);
+    public void Update(T entity);
+    public void Delete(T entity);
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

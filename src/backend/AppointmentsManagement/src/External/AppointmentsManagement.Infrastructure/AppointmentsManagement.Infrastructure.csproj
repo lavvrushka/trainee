@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppointmentsManagement.Application\AppointmentsManagement.Application.csproj" />
-    <ProjectReference Include="..\AppointmentsManagement.Domain\AppointmentsManagement.Domain.csproj" />
+    <ProjectReference Include="..\..\Application\AppointmentsManagement.Application\AppointmentsManagement.Application.csproj" />
+    <ProjectReference Include="..\..\Application\AppointmentsManagement.Domain\AppointmentsManagement.Domain.csproj" />
   </ItemGroup>
 
 </Project>

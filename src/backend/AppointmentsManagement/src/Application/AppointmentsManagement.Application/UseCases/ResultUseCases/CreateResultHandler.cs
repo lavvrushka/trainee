@@ -1,12 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AppointmentsManagement.Application.Common.Interfaces.IRepositories;
+using AppointmentsManagement.Application.DTOs;
+using MyMediator.Interfaces;
 
-namespace AppointmentsManagement.Application.UseCases.ResultUseCases
+namespace AppointmentsManagement.Application.UseCases.ResultUseCases;
+public record CreateResultRequest(
+    string Complaints,
+    string Conclusion,
+    string Recommendations,
+    Guid AppointmentId
+) : IRequest<Guid>;
+public class CreateResultHandler : IRequestHandler<CreateResultRequest, Guid>
 {
-    class CreateResultHandler
+    private readonly IResultRepository _repository;
+
+    public CreateResultHandler(IResultRepository repository)
     {
+        _repository = repository;
+    }
+
+    public async Task<Guid> Handle(CreateResultRequest request, CancellationToken cancellationToken)
+    {
+        var entity = request.MapToEntity();
+        entity.Id = Guid.NewGuid();
+
+        await _repository.AddAsync(entity, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
+
+        return entity.Id;
     }
 }

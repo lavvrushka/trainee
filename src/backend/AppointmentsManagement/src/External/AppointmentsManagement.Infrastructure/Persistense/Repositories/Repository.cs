@@ -1,42 +1,54 @@
 ﻿using AppointmentsManagement.Application.Common.Interfaces.IRepositories;
+using AppointmentsManagement.Domain.Models;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
 using Microsoft.EntityFrameworkCore;
+
 namespace AppointmentsManagement.Infrastructure.Persistense.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T>(AppointmentsManagementDbContext _context) : IRepository<T> where T : class, IEntity
 {
-    protected readonly AppointmentsManagementDbContext _context;
-    protected readonly DbSet<T> _dbSet;
+    private readonly DbSet<T> _dbSet = _context.Set<T>();
 
-    public Repository(AppointmentsManagementDbContext context)
+    public Task<Pagination<T>> GetAllAsync(PageSettings pageSettings, CancellationToken cancellationToken = default)
     {
-        _context = context;
-        _dbSet = _context.Set<T>();
+        var query = _dbSet.AsNoTracking();
+
+        return PaginateAsync(query, pageSettings, cancellationToken);
+    }
+    protected static async Task<Pagination<T>> PaginateAsync(IQueryable<T> query, PageSettings pageSettings, CancellationToken cancellationToken)
+    {
+        int count = await query.CountAsync(cancellationToken);
+
+        List<T> items = await query
+            .Skip((pageSettings.PageIndex - 1) * pageSettings.PageSize)
+            .Take(pageSettings.PageSize)
+            .ToListAsync(cancellationToken);
+
+        return new Pagination<T>(items, count, pageSettings);
     }
 
-    public virtual async Task<List<T>> GetAllAsync()
+    public Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.ToListAsync();
+        return _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public virtual async Task<T?> GetByIdAsync(Guid id)
+    public async ValueTask AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FindAsync(id);
+        await _dbSet.AddAsync(entity, cancellationToken);
     }
 
-    public virtual async Task AddAsync(T entity)
-    {
-        await _dbSet.AddAsync(entity);
-    }
-
-    public virtual async Task UpdateAsync(T entity)
+    public void Update(T entity)
     {
         _dbSet.Update(entity);
     }
 
-    public virtual async Task DeleteAsync(T entity)
+    public void Delete(T entity)
     {
         _dbSet.Remove(entity);
     }
 
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return _context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -1,13 +1,13 @@
 ﻿namespace AppointmentsManagement.Domain.Models;
 
-public class Result
+public class Result : IEntity
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public string Complaints { get; set; }
-    public string Conclusion { get; set; }
-    public string Recommendations { get; set; }
+    public string Complaints { get; set; } = string.Empty;
+    public string Conclusion { get; set; } = string.Empty;
+    public string Recommendations { get; set; } = string.Empty;
 
-    public int AppointmentId { get; set; }
-    public Appointment Appointment { get; set; }
+    public Guid AppointmentId { get; set; }
+    public Appointment? Appointment { get; set; }
 }

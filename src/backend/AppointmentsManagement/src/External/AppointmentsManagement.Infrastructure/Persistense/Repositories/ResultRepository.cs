@@ -2,43 +2,26 @@
 using AppointmentsManagement.Domain.Models;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
 using Microsoft.EntityFrameworkCore;
+
 namespace AppointmentsManagement.Infrastructure.Persistense.Repositories;
 
-public class ResultRepository : Repository<Result>, IResultRepository
+public class ResultRepository(AppointmentsManagementDbContext context)
+    : Repository<Result>(context), IResultRepository
 {
-    public ResultRepository(AppointmentsManagementDbContext context)
-        : base(context)
+    public Task<Result?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken cancellationToken = default)
     {
+        return context.Results
+            .Include(r => r.Appointment)
+            .FirstOrDefaultAsync(r => r.AppointmentId == appointmentId, cancellationToken);
     }
 
-    public async Task<Result?> GetByAppointmentIdAsync(int appointmentId)
+    public Task<List<Result>> GetRecentAsync(int days, CancellationToken cancellationToken = default)
     {
-        Result? result = await _dbSet
+        var fromDate = DateTime.UtcNow.AddDays(-days);
+
+        return context.Results
             .Include(r => r.Appointment)
-            .FirstOrDefaultAsync(r => r.AppointmentId == appointmentId);
-
-        return result;
-    }
-
-    public async Task<List<Result>> GetByDoctorAsync(int doctorId)
-    {
-        List<Result> list = await _dbSet
-            .Include(r => r.Appointment)
-            .Where(r => r.Appointment.DoctorId == doctorId)
-            .ToListAsync();
-
-        return list;
-    }
-
-    public async Task<List<Result>> GetRecentAsync(int days)
-    {
-        DateTime cutoff = DateTime.UtcNow.AddDays(-days);
-
-        List<Result> list = await _dbSet
-            .Include(r => r.Appointment)
-            .Where(r => r.Appointment.Date >= cutoff)
-            .ToListAsync();
-
-        return list;
+            .Where(r => r.Appointment.Date >= fromDate)
+            .ToListAsync(cancellationToken);
     }
 }
