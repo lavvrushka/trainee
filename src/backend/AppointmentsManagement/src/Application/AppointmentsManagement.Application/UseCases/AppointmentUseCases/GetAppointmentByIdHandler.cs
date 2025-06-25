@@ -8,16 +8,16 @@ public record GetAppointmentByIdRequest(Guid Id) : IRequest<AppointmentDto?>;
 
 public class GetAppointmentByIdHandler : IRequestHandler<GetAppointmentByIdRequest, AppointmentDto?>
 {
-    private readonly IAppointmentRepository _repository;
+    private readonly IAppointmentRepository _appointmentRepository;
 
-    public GetAppointmentByIdHandler(IAppointmentRepository repository)
+    public GetAppointmentByIdHandler(IAppointmentRepository appointmentRepository)
     {
-        _repository = repository;
+        _appointmentRepository = appointmentRepository;
     }
 
     public async Task<AppointmentDto?> Handle(GetAppointmentByIdRequest request, CancellationToken cancellationToken)
     {
-        var appointment = await _repository.GetByIdAsync(request.Id, cancellationToken);
+        var appointment = await _appointmentRepository.GetByIdAsync(request.Id, cancellationToken);
 
         return appointment?.MapToDto();
     }

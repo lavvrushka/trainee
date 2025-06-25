@@ -6,4 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="6.2.0" />
+    <PackageReference Include="MyMediator" Version="1.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\AppointmentsManagement.Application\AppointmentsManagement.Application.csproj" />
+  </ItemGroup>
+
 </Project>

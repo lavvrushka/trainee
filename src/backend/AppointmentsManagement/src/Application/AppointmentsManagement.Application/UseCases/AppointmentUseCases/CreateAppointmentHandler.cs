@@ -13,19 +13,18 @@ public record CreateAppointmentRequest(
 
 public class CreateAppointmentHandler : IRequestHandler<CreateAppointmentRequest, Guid>
 {
-    private readonly IAppointmentRepository _repository;
+    private readonly IAppointmentRepository _appointmentRepository;
 
-    public CreateAppointmentHandler(IAppointmentRepository repository)
+    public CreateAppointmentHandler(IAppointmentRepository appointmentRepository)
     {
-        _repository = repository;
+        _appointmentRepository = appointmentRepository;
     }
-
     public async Task<Guid> Handle(CreateAppointmentRequest request, CancellationToken cancellationToken)
     {
         var appointment = request.MapToEntity();
 
-        await _repository.AddAsync(appointment, cancellationToken);
-        await _repository.SaveChangesAsync(cancellationToken);
+        await _appointmentRepository.AddAsync(appointment, cancellationToken);
+        await _appointmentRepository.SaveChangesAsync(cancellationToken);
 
         return appointment.Id;
     }
