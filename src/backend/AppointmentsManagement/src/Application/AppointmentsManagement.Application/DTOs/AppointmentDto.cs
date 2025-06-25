@@ -1,4 +1,5 @@
-﻿using AppointmentsManagement.Domain.Models;
+﻿using AppointmentsManagement.Application.UseCases.AppointmentUseCases;
+using AppointmentsManagement.Domain.Models;
 
 namespace AppointmentsManagement.Application.DTOs;
 

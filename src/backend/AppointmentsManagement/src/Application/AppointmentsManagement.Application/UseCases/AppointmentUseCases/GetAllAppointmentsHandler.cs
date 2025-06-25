@@ -9,17 +9,17 @@ public record GetAllAppointmentsRequest(PageSettings PageSettings) : IRequest<Pa
 
 public class GetAllAppointmentsHandler : IRequestHandler<GetAllAppointmentsRequest, Pagination<AppointmentDto>>
 {
-    private readonly IAppointmentRepository _repository;
+    private readonly IAppointmentRepository _appointmentRepository;
 
-    public GetAllAppointmentsHandler(IAppointmentRepository repository)
+    public GetAllAppointmentsHandler(IAppointmentRepository appointmentRepository)
     {
-        _repository = repository;
+        _appointmentRepository = appointmentRepository;
     }
 
     public async Task<Pagination<AppointmentDto>> Handle(GetAllAppointmentsRequest request, CancellationToken cancellationToken)
     {
 
-        Pagination<Appointment> pagedAppointments = await _repository.GetAllAsync(request.PageSettings, cancellationToken);
+        Pagination<Appointment> pagedAppointments = await _appointmentRepository.GetAllAsync(request.PageSettings, cancellationToken);
 
         List<AppointmentDto> dtos = pagedAppointments.Items.Select(appt => appt.MapToDto()).ToList();
 

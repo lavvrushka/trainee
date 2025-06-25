@@ -7,21 +7,21 @@ public record DeleteAppointmentRequest(Guid Id) : IRequest<bool>;
 
 public class DeleteAppointmentHandler : IRequestHandler<DeleteAppointmentRequest, bool>
 {
-    private readonly IAppointmentRepository _repository;
+    private readonly IAppointmentRepository _appointmentRepository;
 
-    public DeleteAppointmentHandler(IAppointmentRepository repository)
+    public DeleteAppointmentHandler(IAppointmentRepository appointmentRepository)
     {
-        _repository = repository;
+        _appointmentRepository = appointmentRepository;
     }
 
     public async Task<bool> Handle(DeleteAppointmentRequest request, CancellationToken cancellationToken)
     {
-        var appointment = await _repository.GetByIdAsync(request.Id, cancellationToken);
+        var appointment = await _appointmentRepository.GetByIdAsync(request.Id, cancellationToken);
         if (appointment == null)
             return false;
 
-        _repository.Delete(appointment);
-        await _repository.SaveChangesAsync(cancellationToken);
+        _appointmentRepository.Delete(appointment);
+        await _appointmentRepository.SaveChangesAsync(cancellationToken);
 
         return true;
     }
