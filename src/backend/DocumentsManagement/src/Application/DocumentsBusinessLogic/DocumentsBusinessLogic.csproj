@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Interfaces\IServices\" />
     <Folder Include="Common\Validation\" />
-    <Folder Include="UseCases\DocumentsUseCases\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="MyMediator" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>

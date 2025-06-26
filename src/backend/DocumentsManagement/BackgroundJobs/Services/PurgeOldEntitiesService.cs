@@ -1,9 +1,10 @@
-﻿using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
+﻿using BackgroundJobs.Options;
+using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-namespace BackgroundJobs.Options;
+namespace BackgroundJobs.Services;
 
 public class PurgeOldEntitiesService : BackgroundService
 {

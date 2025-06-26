@@ -25,13 +25,5 @@ public class ImageConfiguration : IEntityTypeConfiguration<ImageEntity>
         builder.Property(i => i.IsDeleted)
                .HasColumnName("is_deleted")
                .IsRequired();
-
-        builder.Property(i => i.ImageData)
-               .HasColumnName("image_data")
-               .IsRequired();
-
-        builder.Property(i => i.ImageType)
-               .HasColumnName("image_type")
-               .IsRequired();
     }
 }
