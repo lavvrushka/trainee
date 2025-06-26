@@ -43,7 +43,7 @@ public class HardDeleteService : BackgroundService
                 {
                     var container = _blobServiceClient.GetBlobContainerClient(_containerName);
                     await container.GetBlobClient(doc.Id.ToString()).DeleteIfExistsAsync();
-                    await docRepo.DeleteAsync(doc);
+                    docRepo.Delete(doc);
                 }
 
                 var toDeleteImgs = await imgRepo.ListMarkedDeletedAsync(DateTime.MaxValue);
@@ -51,7 +51,7 @@ public class HardDeleteService : BackgroundService
                 {
                     var container = _blobServiceClient.GetBlobContainerClient(_containerName);
                     await container.GetBlobClient(img.Id.ToString()).DeleteIfExistsAsync();
-                    await imgRepo.DeleteAsync(img);
+                    imgRepo.Delete(img);
                 }
 
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

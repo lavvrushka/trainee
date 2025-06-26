@@ -4,25 +4,26 @@ using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
 using Microsoft.EntityFrameworkCore;
 namespace DocumentsDataAccess.Persistence.Repositories;
 
-public class DocumentRepository: Repository<DocumentEntity>, IDocumentRepository
+public class DocumentRepository(AppDbContext context) : Repository<DocumentEntity>(context), IDocumentRepository
 {
-    public DocumentRepository(AppDbContext context)
-        : base(context)
-    {
-    }
 
-    public async Task<List<DocumentEntity>> ListMarkedDeletedAsync(DateTime cutoff)
+    private readonly DbSet<DocumentEntity> _dbSet = context.Set<DocumentEntity>();
+
+    public async Task<List<DocumentEntity>> ListMarkedDeletedAsync(DateTime deletionCutoff)
     {
         return await _dbSet
-            .Where(d => d.IsDeleted && d.LastRetrievedAt <= cutoff)
+            .Where(doc => doc.IsDeleted && doc.LastRetrievedAt <= deletionCutoff)
             .ToListAsync();
     }
 
     public async Task SoftDeleteAsync(Guid id)
     {
         var entity = await _dbSet.FindAsync(id);
+       
         entity.IsDeleted = true;
-        _dbSet.Update(entity);
-    }
+        entity.LastRetrievedAt = DateTime.UtcNow;
 
+        _dbSet.Update(entity);
+        await context.SaveChangesAsync();
+    }
 }

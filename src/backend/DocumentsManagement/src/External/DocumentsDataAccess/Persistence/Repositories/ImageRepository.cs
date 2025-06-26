@@ -2,26 +2,28 @@
 using DocumentsDataAccess.Persistence.Entities;
 using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
 using Microsoft.EntityFrameworkCore;
+
 namespace DocumentsDataAccess.Persistence.Repositories;
 
-public class ImageRepository: Repository<ImageEntity>, IImageRepository
+public class ImageRepository(AppDbContext context) : Repository<ImageEntity>(context), IImageRepository
 {
-    public ImageRepository(AppDbContext context)
-        : base(context)
-    {
-    }
 
-    public async Task<List<ImageEntity>> ListMarkedDeletedAsync(DateTime cutoff)
+    private readonly DbSet<ImageEntity> _dbSet = context.Set<ImageEntity>();
+    public async Task<List<ImageEntity>> ListMarkedDeletedAsync(DateTime deletionCutoff)
     {
         return await _dbSet
-            .Where(i => i.IsDeleted && i.LastRetrievedAt <= cutoff)
+            .Where(img => img.IsDeleted && img.LastRetrievedAt <= deletionCutoff)
             .ToListAsync();
     }
 
-    public async Task SoftDeleteAsync(Guid id)
+    public async Task SoftDeleteAsync(Guid imageId)
     {
-        var entity = await _dbSet.FindAsync(id);
-        entity.IsDeleted = true;
-        _dbSet.Update(entity);
+        var image = await _dbSet.FindAsync(imageId);
+
+        image.IsDeleted = true;
+        image.LastRetrievedAt = DateTime.UtcNow;
+
+        _dbSet.Update(image);
+        await context.SaveChangesAsync();
     }
 }

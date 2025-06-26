@@ -3,6 +3,6 @@ namespace DocumentsDataAccess.Persistence.Interfaces.IRepositories;
 
 public interface IDocumentRepository : IRepository<DocumentEntity>
 {
-    Task<List<DocumentEntity>> ListMarkedDeletedAsync(DateTime cutoff);
-    Task SoftDeleteAsync(Guid id);
+    public Task<List<DocumentEntity>> ListMarkedDeletedAsync(DateTime cutoff);
+    public Task SoftDeleteAsync(Guid id);
 }
