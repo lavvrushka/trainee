@@ -43,7 +43,7 @@ public class UpdateImageHandler : IRequestHandler<UpdateImageRequest, Unit>
         await blobClient.UploadAsync(request.File.OpenReadStream(), overwrite: true, cancellationToken: ct);
 
         entity.BlobUrl = blobClient.Uri.ToString();
-        await _repository.UpdateAsync(entity);
+        _repository.Update(entity);
 
         return Unit.Value;
     }
