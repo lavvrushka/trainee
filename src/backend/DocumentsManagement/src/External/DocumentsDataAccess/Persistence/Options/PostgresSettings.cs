@@ -1,6 +1,7 @@
 ﻿
 namespace DocumentsDataAccess.Persistence.Options;
 
-class PostgresSettings
+public class PostgresSettings
 {
+    public string DefaultConnection { get; set; }
 }

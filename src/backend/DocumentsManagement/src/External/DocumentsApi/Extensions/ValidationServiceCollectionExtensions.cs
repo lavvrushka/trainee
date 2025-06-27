@@ -1,5 +1,6 @@
 ﻿using DocumentsBusinessLogic.Common.Validation.DocumentsValidators;
 using DocumentsBusinessLogic.Common.Validation.ImagesValidators;
+using FluentValidation;
 
 namespace DocumentsAPI.Extensions;
 
