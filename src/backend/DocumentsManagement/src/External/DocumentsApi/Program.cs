@@ -1,5 +1,7 @@
+using BackgroundJobs.Services;
 using DocumentsAPI.Extensions;
 using DocumentsAPI.Middlewares;
+using DocumentsDataAccess.Persistence.Context;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddValidationServices();
 builder.Services.AddCustomMiddlewares();
+builder.Services.AddBlobServices(builder.Configuration);
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -40,11 +43,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddHostedService<PurgeOldEntitiesService>();
+builder.Services.AddHostedService<HardDeleteService>();
 
 var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+await AppContextInitializer.InitializeAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
