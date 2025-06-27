@@ -1,4 +1,5 @@
-﻿using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
+﻿using DocumentsDataAccess.Persistence.Context;
+using DocumentsDataAccess.Persistence.Interfaces.IRepositories;
 using DocumentsDataAccess.Persistence.Repositories;
 using Microsoft.Extensions.Options;
 
@@ -10,7 +11,7 @@ public static class InfrastructureServiceCollectionExtensions
     {
         services.Configure<DatabaseOptions>(configuration.GetSection("ConnectionStrings"));
 
-        services.AddDbContext<UserManagementDbContext>((serviceProvider, options) =>
+        services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
             var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
             options.UseNpgsql(dbOptions.DefaultConnection);
