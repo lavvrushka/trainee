@@ -35,14 +35,15 @@ public class DownloadDocumentHandler : IRequestHandler<DownloadDocumentRequest, 
 
         if (entity == null)
         {
-            throw new KeyNotFoundException($"Document with ID {request.Id} was not found.");
+            throw new KeyNotFoundException($"Документ {request.Id} не найден");
+
         }
 
         if (entity.IsDeleted)
         {
-            throw new InvalidOperationException($"Cannot download document {request.Id} because it is marked as deleted.");
+            throw new InvalidOperationException($"Документ {request.Id} помечен как удалённый");
         }
-
+            
         var blobClient = _blobService
             .GetBlobContainerClient(_containerName)
             .GetBlobClient(request.Id.ToString());

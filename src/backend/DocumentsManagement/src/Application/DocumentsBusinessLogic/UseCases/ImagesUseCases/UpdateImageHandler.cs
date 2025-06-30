@@ -16,7 +16,10 @@ public class UpdateImageHandler : IRequestHandler<UpdateImageRequest, Unit>
     private readonly BlobServiceClient _blobService;
     private readonly string _containerName;
 
-    public UpdateImageHandler(IImageRepository repository, BlobServiceClient blobService, IOptions<AzureBlobSettings> options)
+    public UpdateImageHandler(
+        IImageRepository repository,
+        BlobServiceClient blobService,
+        IOptions<AzureBlobSettings> options)
     {
         _repository = repository;
         _blobService = blobService;
@@ -29,16 +32,16 @@ public class UpdateImageHandler : IRequestHandler<UpdateImageRequest, Unit>
 
         if (entity == null)
         {
-            throw new KeyNotFoundException($"Image with ID {request.Id} was not found.");
+            throw new KeyNotFoundException($"Image {request.Id} не найдена");
         }
 
         if (entity.IsDeleted)
         {
-            throw new InvalidOperationException($"Cannot update image {entity.Id} because it is marked as deleted.");
+            throw new InvalidOperationException($"Image {request.Id} помечена как удалённая");
         }
+
         var container = _blobService.GetBlobContainerClient(_containerName);
-        var blobName = request.Id.ToString();
-        var blobClient = container.GetBlobClient(blobName);
+        var blobClient = container.GetBlobClient(request.Id.ToString());
 
         await blobClient.UploadAsync(request.File.OpenReadStream(), overwrite: true, cancellationToken: ct);
 

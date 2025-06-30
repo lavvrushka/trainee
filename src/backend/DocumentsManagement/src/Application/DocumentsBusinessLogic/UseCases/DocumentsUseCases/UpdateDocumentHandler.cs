@@ -14,16 +14,16 @@ public record UpdateDocumentRequest(
 public class UpdateDocumentHandler : IRequestHandler<UpdateDocumentRequest, Unit>
 {
     private readonly IDocumentRepository _repository;
-    private readonly BlobServiceClient _blobServiceClient;
+    private readonly BlobServiceClient _blobService;
     private readonly string _containerName;
 
     public UpdateDocumentHandler(
         IDocumentRepository repository,
-        BlobServiceClient blobServiceClient,
+        BlobServiceClient blobService,
         IOptions<AzureBlobSettings> options)
     {
         _repository = repository;
-        _blobServiceClient = blobServiceClient;
+        _blobService = blobService;
         _containerName = options.Value.ContainerName;
     }
 
@@ -33,23 +33,22 @@ public class UpdateDocumentHandler : IRequestHandler<UpdateDocumentRequest, Unit
 
         if (entity == null)
         {
-            throw new KeyNotFoundException($"Document with ID {request.Id} was not found.");
+            throw new KeyNotFoundException($"Document {request.Id} не найдена");
         }
 
         if (entity.IsDeleted)
         {
-            throw new InvalidOperationException($"Cannot update document {entity.Id} because it is marked as deleted.");
+            throw new InvalidOperationException($"Document {request.Id} помечена как удалённая");
         }
 
-        var container = _blobServiceClient.GetBlobContainerClient(_containerName);
+        var container = _blobService.GetBlobContainerClient(_containerName);
         var blobClient = container.GetBlobClient(request.Id.ToString());
 
         await using var stream = request.File.OpenReadStream();
         await blobClient.UploadAsync(stream, overwrite: true, cancellationToken: ct);
 
         entity.BlobUrl = blobClient.Uri.ToString();
-
-         _repository.Update(entity);
+        _repository.Update(entity);
 
         return Unit.Value;
     }

@@ -19,28 +19,32 @@ public class CreateImageHandler : IRequestHandler<CreateImageRequest, Guid>
     private readonly BlobServiceClient _blobService;
     private readonly string _containerName;
 
-    public CreateImageHandler( IImageRepository repository, BlobServiceClient blobService, IConfiguration config)
+    public CreateImageHandler(
+        IImageRepository repository,
+        BlobServiceClient blobService,
+        IOptions<AzureBlobSettings> options)
     {
         _repository = repository;
         _blobService = blobService;
-        IOptions<AzureBlobSettings> options;
+        _containerName = options.Value.ContainerName;
     }
 
     public async Task<Guid> Handle(CreateImageRequest request, CancellationToken ct)
     {
         var id = Guid.NewGuid();
         var blobName = id.ToString();
+        var container = _blobService.GetBlobContainerClient(_containerName);
 
-        var containerClient = _blobService.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient(blobName);
+        await container.CreateIfNotExistsAsync(cancellationToken: ct);
 
+        var blobClient = container.GetBlobClient(blobName);
         await using var stream = request.File.OpenReadStream();
         await blobClient.UploadAsync(stream, overwrite: false, cancellationToken: ct);
 
         var blobUrl = blobClient.Uri.ToString();
         var entity = request.ToEntity(blobUrl);
-
         await _repository.AddAsync(entity);
+
         return entity.Id;
     }
 }
