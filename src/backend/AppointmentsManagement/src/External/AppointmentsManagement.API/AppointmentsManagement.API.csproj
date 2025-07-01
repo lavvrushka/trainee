@@ -8,11 +8,19 @@
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="6.2.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
     <PackageReference Include="MyMediator" Version="1.0.5" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\AppointmentsManagement.Application\AppointmentsManagement.Application.csproj" />
+    <ProjectReference Include="..\AppointmentsManagement.Infrastructure\AppointmentsManagement.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
