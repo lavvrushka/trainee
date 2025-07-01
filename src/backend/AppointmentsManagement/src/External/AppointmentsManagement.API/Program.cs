@@ -3,6 +3,7 @@ using AppointmentsManagement.API.Middlewares;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
 using FastEndpoints;
 using Microsoft.OpenApi.Models;
+using MyMediator.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,8 +47,9 @@ builder.Services.AddSwaggerGen(c =>
 
 
 var app = builder.Build();
-
+app.UseFastEndpoints();
 app.UseMiddleware<GlobalExceptionMiddleware>();
+
 
 await AppointmentsManagementDbContextInitializer.InitializeAsync(app.Services);
 
