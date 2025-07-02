@@ -3,7 +3,7 @@ using AppointmentsManagement.API.Middlewares;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
 using FastEndpoints;
 using Microsoft.OpenApi.Models;
-using MyMediator.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
