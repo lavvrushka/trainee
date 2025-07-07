@@ -3,6 +3,7 @@ using DocumentsAPI.Extensions;
 using DocumentsAPI.Middlewares;
 using DocumentsDataAccess.Persistence.Context;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddSingleton(sp =>
+{
+    var cfg = builder.Configuration.GetSection("RabbitMq");
+    var factory = new ConnectionFactory
+    {
+        HostName = cfg["HostName"],
+        UserName = cfg["UserName"],
+        Password = cfg["Password"]
+    };
+    return factory.CreateConnection();
+});
+
+builder.Services.AddHostedService<DocumentCreatedConsumer>();
 builder.Services.AddHostedService<PurgeOldEntitiesService>();
 builder.Services.AddHostedService<HardDeleteService>();
 
