@@ -1,8 +1,13 @@
 using AppointmentsManagement.API.Extensions;
 using AppointmentsManagement.API.Middlewares;
+using AppointmentsManagement.Application.Common.Interfaces.IServices;
+using AppointmentsManagement.Infrastructure.Messaging;
 using AppointmentsManagement.Infrastructure.Persistense.Context;
+using AppointmentsManagement.Infrastructure.Services;
 using FastEndpoints;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +49,18 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services.AddSingleton(sp =>
+{
+    var cfg = builder.Configuration.GetSection("RabbitMq");
+    return new ConnectionFactory
+    {
+        HostName = cfg["HostName"],
+        UserName = cfg["UserName"],
+        Password = cfg["Password"]
+    }.CreateConnectionAsync();
+});
+builder.Services.AddSingleton<IMessagingPublisher, RabbitMqPublisher>();
 
 
 var app = builder.Build();
