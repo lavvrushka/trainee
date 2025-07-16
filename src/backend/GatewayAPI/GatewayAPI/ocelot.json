@@ -1,0 +1,124 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/services/{everything}",
+      "ServiceName": "ServicesService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/services/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      },
+      "RetryPolicy": {
+        "RetryCount": 3,
+        "RetryBackOffPower": 2
+      },
+      "CircuitBreakerPolicy": {
+        "ExceptionsAllowedBeforeBreaking": 2,
+        "DurationOfBreak": 5
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/offices/{everything}",
+      "ServiceName": "OfficesService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/offices/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      },
+      "RetryPolicy": {
+        "RetryCount": 3,
+        "RetryBackOffPower": 2
+      },
+      "CircuitBreakerPolicy": {
+        "ExceptionsAllowedBeforeBreaking": 2,
+        "DurationOfBreak": 5
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/profiles/{everything}",
+      "ServiceName": "ProfilesService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/profiles/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      },
+      "RetryPolicy": {
+        "RetryCount": 3,
+        "RetryBackOffPower": 2
+      },
+      "CircuitBreakerPolicy": {
+        "ExceptionsAllowedBeforeBreaking": 2,
+        "DurationOfBreak": 5
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/documents/{everything}",
+      "ServiceName": "DocumentsService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/documents/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      },
+      "RetryPolicy": {
+        "RetryCount": 3,
+        "RetryBackOffPower": 2
+      },
+      "CircuitBreakerPolicy": {
+        "ExceptionsAllowedBeforeBreaking": 2,
+        "DurationOfBreak": 5
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/appointments/{everything}",
+      "ServiceName": "AppointmentsService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/appointments/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      },
+      "RetryPolicy": {
+        "RetryCount": 3,
+        "RetryBackOffPower": 2
+      },
+      "CircuitBreakerPolicy": {
+        "ExceptionsAllowedBeforeBreaking": 2,
+        "DurationOfBreak": 5
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "ServiceName": "AuthService",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "JwtBearer",
+        "AllowedScopes": []
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "Consul"
+    },
+    "RequestIdKey": "OcRequestId"
+  }
+}
