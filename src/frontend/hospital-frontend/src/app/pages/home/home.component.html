@@ -1,0 +1,95 @@
+<div class="home-wrapper">
+  <div class="hero">
+    <div class="overlay">
+      <div class="hero-text">
+        <h1>Welcome to InnoClinic</h1>
+        <h2>Modern healthcare with a personal touch</h2>
+        <button>Learn More</button>
+      </div>
+    </div>
+  </div>
+
+ 
+  <section class="about-clinic">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-image">
+        <img src="assets/clinic-interior.jpg" alt="InnoClinic Interior" />
+      </div>
+      <div class="about-text">
+        <h2>О клинике</h2>
+        <p>
+          InnoClinic — это современный медицинский центр, где человеческая забота и
+          передовые технологии работают рука об руку. Мы предлагаем комплексный
+          подход к здоровью каждого пациента.
+        </p>
+        <ul class="features-list">
+          <li><i class="fas fa-stethoscope"></i> Современное диагностическое оборудование</li>
+          <li><i class="fas fa-user-md"></i> Команда высококлассных специалистов</li>
+          <li><i class="fas fa-heartbeat"></i> Индивидуальные планы лечения</li>
+          <li><i class="fas fa-clock"></i> Удобное онлайн-запись к врачу</li>
+        </ul>
+        <button class="btn-primary">Узнать больше</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="our-staff">
+  <div class="staff-container">
+    <div class="staff-header">
+      <h2><i class="fas fa-user-md"></i> Наш персонал</h2>
+      <p class="subtitle">Профессионалы, которым можно доверить своё здоровье</p>
+    </div>
+
+    <div class="staff-carousel">
+      <button class="nav prev" (click)="scrollPrev()">‹</button>
+
+      <div class="carousel-wrapper" #carousel>
+        <div class="staff-card" *ngFor="let staff of staffList">
+          <img [src]="staff.photo" [alt]="staff.name" />
+          <div class="card-body">
+            <h3>{{ staff.name }}</h3>
+            <p>{{ staff.position }}</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav next" (click)="scrollNext()">›</button>
+    </div>
+  </div>
+</section>
+
+<section class="location-section">
+  <div class="location-content">
+    <div class="text-block">
+      <h2><i class="fas fa-map-marker-alt"></i> Где мы находимся</h2>
+      <p class="address">просп. Жукова 29, Минск, Минская область, Беларусь, 220036</p>
+
+      <div class="contact-details">
+        <div class="detail">
+          <i class="fas fa-phone-alt"></i>
+          <span>+375 (29) 123-45-67</span>
+        </div>
+        <div class="detail">
+          <i class="fas fa-clock"></i>
+          <span>Пн–Сб: 08:00–20:00</span>
+        </div>
+        <div class="detail">
+          <i class="fas fa-car-side"></i>
+          <span>Есть парковка</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-block">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2359.085932378173!2d27.4903985!3d53.8704646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46dbc59c214f1cb7%3A0x15fef4c1e2d6c84c!2z0J_Rg9Cx0L7QvNC10L3QsNGPINCg0LXRgdGC0Ywg0JbQtdCy0LjQvdC-0YDQvtCy0LAgMjksINCb0YzQstCw0YDQsNC00YHQutC40LkgMjIwMDM2LCDQnNC-0YHQutCy0LAsINCU0L7QvNC40YUg0LrQvtC70LvQtdC90YI!5e0!3m2!1sru!2sby!4v1720957066817!5m2!1sru!2sby"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+</div>

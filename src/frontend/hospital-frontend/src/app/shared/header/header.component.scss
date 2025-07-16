@@ -1,0 +1,151 @@
+.top-bar {
+  background: #f8f9fa;
+  padding: 8px 40px;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e6ea;
+
+  .contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    color: #555;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      i {
+        color: #0069d9;
+      }
+    }
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 12px;
+
+    a {
+      color: #0069d9;
+      font-size: 1rem;
+      transition: transform 0.3s ease, color 0.3s;
+
+      &:hover {
+        transform: scale(1.2);
+        color: #0056b3;
+      }
+    }
+  }
+}
+
+.header {
+background-color: rgba(248, 249, 250, 0.8);
+  position: relative;
+  display: flex;
+  align-items: center;
+   z-index: 10; 
+  padding: 20px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+
+  .logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0069d9;
+
+    span {
+      color: #222;
+    }
+  }
+
+  .nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+    align-items: center;
+
+    a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #0069d9;
+      }
+
+      &::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 2px;
+        background: #0069d9;
+        transition: width 0.3s;
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+      }
+
+      &:hover::after {
+        width: 100%;
+      }
+
+      &.btn {
+        padding: 8px 18px;
+        background: transparent;
+        border: 2px solid #0069d9;
+        border-radius: 6px;
+        color: #0069d9;
+        font-weight: 600;
+        transition: background 0.3s, color 0.3s;
+
+        &:hover {
+          background: #0069d9;
+          color: white;
+        }
+
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .auth {
+    margin-left: auto;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+
+    a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #0069d9;
+      }
+
+      &.btn {
+        padding: 8px 18px;
+        background: transparent;
+        border: 2px solid #0069d9;
+        border-radius: 6px;
+        color: #0069d9;
+        font-weight: 600;
+        transition: background 0.3s, color 0.3s;
+
+        &:hover {
+          background: #0069d9;
+          color: white;
+        }
+      }
+    }
+  }
+}
